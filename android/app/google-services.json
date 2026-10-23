@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "341428856100",
-    "project_id": "teencu",
-    "storage_bucket": "teencu.firebasestorage.app"
+    "project_number": "732006129484",
+    "project_id": "teencu-dev",
+    "storage_bucket": "teencu-dev.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:341428856100:android:368ec4dbfaa82b93afffb1",
+        "mobilesdk_app_id": "1:732006129484:android:6d25c820dce7884eee39e9",
         "android_client_info": {
           "package_name": "id.my.teencu"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyABLAllip-tnpYPs18bBMeTCs3lbjZNy_8"
+          "current_key": "AIzaSyAT5pw_N8wCKKMxsP54BaYP15SrXD668K0"
         }
       ],
       "services": {
