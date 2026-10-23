@@ -2,259 +2,112 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:teencu/sign_in.dart';
 
+import 'services/auth_service.dart';
 
-class ProfilePage extends StatelessWidget {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  User? user = FirebaseAuth.instance.currentUser;
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final _user = FirebaseAuth.instance.currentUser;
+  late final _profile = FirebaseFirestore.instance
+      .collection('users')
+      .doc(_user!.uid)
+      .snapshots();
+  bool _signingOut = false;
+
+  Future<void> _logout() async {
+    setState(() => _signingOut = true);
+    try {
+      await FirebaseAuth.instance.signOut();
+      // AuthGate removes this session's entire navigator.
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(authErrorMessage(error))),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _signingOut = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    String? userMbti;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(500, 248, 55, 88),
-        elevation: 0,
-        title: Text(
-          'Account',
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+      appBar: AppBar(title: const Text('Akun')),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            const Center(
+              child: CircleAvatar(
+                radius: 48,
+                backgroundImage: AssetImage('assets/icons/profile_avatar.png'),
+              ),
+            ),
+            const SizedBox(height: 24),
+            _detail('EMAIL', _user?.email ?? '-'),
+            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: _profile,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Text(
+                      'Profil belum dapat dimuat. Periksa koneksi dan coba kembali.');
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final data = snapshot.data!.data();
+                if (data == null) {
+                  return const Text(
+                      'Profil belum tersedia. Silakan login ulang.');
+                }
+                final mbti = data['lastMbti'] as String? ?? '';
+                final date = data['lastMbtiDate'];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _detail('USERNAME', data['username'] as String? ?? '-'),
+                    _detail('POIN', '${data['points'] ?? 0}'),
+                    _detail('MBTI TERAKHIR',
+                        mbti.isEmpty ? 'Belum mengikuti tes' : mbti),
+                    _detail(
+                      'TANGGAL TES TERAKHIR',
+                      mbti.isNotEmpty && date is Timestamp
+                          ? DateFormat('yyyy-MM-dd HH:mm').format(date.toDate())
+                          : '-',
+                    ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _signingOut ? null : _logout,
+              child: Text(_signingOut ? 'Keluar...' : 'Logout'),
+            ),
+          ],
         ),
       ),
-      body: Stack(
+    );
+  }
+
+  Widget _detail(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Background warna pink
-          Container(
-            color: Color.fromARGB(500, 248, 55, 88),
-          ),
-          // Konten utama
-          Column(
-            children: [
-              SizedBox(height: 30),
-              // Avatar dan nama
-              CircleAvatar(
-                radius: 50, // Ukuran avatar
-                backgroundImage: AssetImage("assets/icons/profile_avatar.png"),
-              ),
-              SizedBox(height: 12),
-              Text(
-                'Hello!',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 30),
-              // Kontainer putih untuk detail profil
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Email
-                      _buildProfileDetail(
-                        label: 'EMAIL ADDRESS',
-                        value: user?.email ?? 'Unknown',
-                      ),
-                      SizedBox(height: 24),
-                      // Points
-                      FutureBuilder<int?>(
-                        future: getPoints(user?.uid ?? ''),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          }
-
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
-
-                          int? userPoints = snapshot.data;
-                          return _buildProfileDetail(
-                            label: 'POINTS',
-                            value: userPoints?.toString() ?? '0',
-                          );
-                        },
-                      ),
-                      SizedBox(height: 24),
-                      FutureBuilder<String?>(
-                        future: getLastMbti(user?.uid ?? ''),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          }
-
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
-
-                          userMbti = snapshot.data;
-                          return _buildProfileDetail(
-                            label: 'YOUR LAST MBTI',
-                            value: userMbti?.trim() ?? '-',
-                          );
-                        },
-                      ),
-                      SizedBox(height: 24),
-                      FutureBuilder<Timestamp?>(
-                        future: getLastMbtiDate(user?.uid ?? ''),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          }
-
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
-
-                          Timestamp? _userMbtiDate = snapshot.data;
-                          DateTime userMbtiDate = _userMbtiDate!.toDate();
-
-                          // Menangani null case untuk userMbtiDate
-                          String tanggal = '-';
-                          if (userMbti != ''){
-                            tanggal = userMbtiDate != null
-                                ? DateFormat('yyyy-MM-dd - kk:mm').format(userMbtiDate)
-                                : '-';
-                          }
-                          return _buildProfileDetail(
-                            label: 'YOUR LAST MBTI TEST',
-                            value: tanggal,
-                          );
-                        },
-                      ),
-                      Spacer(),
-                      // Tombol Logout
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await FirebaseAuth.instance.signOut();
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(500, 248, 55, 88),
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: const Text(
-                            'Logout',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          Text(label, style: const TextStyle(color: Colors.grey)),
+          const SizedBox(height: 6),
+          Text(value, style: const TextStyle(fontSize: 16)),
         ],
       ),
     );
-  }
-
-  // Widget untuk detail profil
-  Widget _buildProfileDetail(
-      {required String label, required String value}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[700],
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Fungsi untuk mengambil nilai points dari Firestore
-  Future<int?> getPoints(String docId) async {
-    try {
-      DocumentSnapshot doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(docId)
-          .get();
-
-      if (doc.exists && doc.data() != null) {
-        return doc.get('points') as int;
-      } else {
-        return null;
-      }
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<String?> getLastMbti(String docId) async {
-    try {
-      DocumentSnapshot doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(docId)
-          .get();
-
-      if (doc.exists && doc.data() != null) {
-        return doc.get('lastMbti') as String;
-      } else {
-        return null;
-      }
-    } catch (e) {
-      return null;
-    }
-  }
-  Future<Timestamp?> getLastMbtiDate(String docId) async {
-    try {
-      DocumentSnapshot doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(docId)
-          .get();
-
-      if (doc.exists && doc.data() != null) {
-        return doc.get('lastMbtiDate') as Timestamp;
-      } else {
-        return null;
-      }
-    } catch (e) {
-      return null;
-    }
   }
 }

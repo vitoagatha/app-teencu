@@ -80,6 +80,7 @@ class HomePage extends StatelessWidget {
                   return;
                 } else {
                   showDialog(
+                    useRootNavigator: false,
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
@@ -113,6 +114,7 @@ class HomePage extends StatelessWidget {
             // Tombol Chat
             _buildButton(context, "Chat", Color.fromARGB(500, 248,55,88), () {
               showDialog(
+                useRootNavigator: false,
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
