@@ -95,14 +95,14 @@ test('Private profiles and protected fields', async (t) => {
     }
     assert.equal((await request(ownerUrl, owner.token, 'DELETE')).status, 403);
   });
-  await t.test('Personal MBTI result requires allowed type and server time', async () => {
+  await t.test('Legacy profile-only result updates are rejected without atomic history', async () => {
     assert.equal((await commit(owner.token, updateWrite(owner.uid, { lastMbti: { stringValue: 'INVALID' } }, true))).status, 403);
     assert.equal((await commit(owner.token, updateWrite(owner.uid, { lastMbti: { stringValue: 'INFP' } }))).status, 403);
     const result = await commit(owner.token, updateWrite(owner.uid, { lastMbti: { stringValue: 'INFP' } }, true));
-    assert.equal(result.status, 200, JSON.stringify(result.data));
+    assert.equal(result.status, 403, JSON.stringify(result.data));
     const profile = await request(ownerUrl, owner.token);
     assert.equal(profile.data.fields.points.integerValue, '0');
-    assert.equal(profile.data.fields.lastMbti.stringValue, 'INFP');
+    assert.equal(profile.data.fields.lastMbti.stringValue, '');
     assert.equal((await commit(other.token, updateWrite(owner.uid, { lastMbti: { stringValue: 'ENTJ' } }, true))).status, 403);
   });
   await t.test('Chat and reward collections remain closed', async () => {

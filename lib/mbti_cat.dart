@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:teencu/question_mbti.dart';
+import 'package:teencu/mbti_test_page.dart';
 
 class MbtiCategoriesPage extends StatelessWidget {
   @override
@@ -122,7 +122,7 @@ class MbtiCategoriesPage extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  QuestionMbti()), // Ganti dengan halaman tes MBTI Anda
+                                  const MbtiTestPage()), // Ganti dengan halaman tes MBTI Anda
                         );
                       },
                       style: ElevatedButton.styleFrom(

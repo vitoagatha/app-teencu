@@ -1,41 +1,106 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isOwner(uid) {
-      return request.auth != null && request.auth.uid == uid;
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    // Bootstrap/revoke ONLY through Firebase Console or trusted Admin SDK.
+    function isContentAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/content_admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/content_admins/$(request.auth.uid)).data.enabled == true;
     }
-
+    function validBank(data) {
+      return data.keys().hasAll(['title', 'version', 'scoringVersion', 'status', 'questions', 'questionIds', 'createdAt', 'publishedAt'])
+        && data.keys().hasOnly(['title', 'version', 'scoringVersion', 'status', 'questions', 'questionIds', 'createdAt', 'publishedAt'])
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 160
+        && data.version is string && data.version.size() > 0 && data.version.size() <= 80
+        && data.scoringVersion == 'teencu-centered-v1'
+        && data.questions is list && data.questionIds is list
+        && data.questions.size() >= 4 && data.questions.size() <= 80
+        && data.questionIds.size() == data.questions.size()
+        && data.questionIds.toSet().size() == data.questionIds.size()
+        && data.createdAt is timestamp;
+    }
+    function validScores(scores) {
+      return scores is map && scores.keys().hasAll(['ei', 'sn', 'tf', 'jp'])
+        && scores.keys().hasOnly(['ei', 'sn', 'tf', 'jp'])
+        && scores.ei is int && scores.ei != 0 && scores.ei >= -160 && scores.ei <= 160
+        && scores.sn is int && scores.sn != 0 && scores.sn >= -160 && scores.sn <= 160
+        && scores.tf is int && scores.tf != 0 && scores.tf >= -160 && scores.tf <= 160
+        && scores.jp is int && scores.jp != 0 && scores.jp >= -160 && scores.jp <= 160;
+    }
+    function validResult(result) {
+      let bank = get(/databases/$(database)/documents/mbti_tests/$(result.testId)).data;
+      return result.keys().hasAll(['testId', 'testVersion', 'scoringVersion', 'answers', 'dimensionScores', 'resultType', 'completedAt'])
+        && result.keys().hasOnly(['testId', 'testVersion', 'scoringVersion', 'answers', 'dimensionScores', 'resultType', 'completedAt'])
+        && bank.status == 'published'
+        && result.testVersion == bank.version && result.scoringVersion == bank.scoringVersion
+        && result.answers is map
+        && result.answers.keys().hasAll(bank.questionIds)
+        && result.answers.keys().hasOnly(bank.questionIds)
+        && result.answers.values().hasOnly([1, 2, 3, 4, 5])
+        && validScores(result.dimensionScores)
+        && result.resultType ==
+          (result.dimensionScores.ei > 0 ? 'E' : 'I') +
+          (result.dimensionScores.sn > 0 ? 'S' : 'N') +
+          (result.dimensionScores.tf > 0 ? 'T' : 'F') +
+          (result.dimensionScores.jp > 0 ? 'J' : 'P')
+        && result.completedAt == request.time;
+    }
+    match /content_admins/{uid} {
+      allow get: if isOwner(uid);
+      // No client writes, including self-promotion.
+    }
+    match /mbti_tests/{testId} {
+      allow get: if (signedIn() && resource.data.status == 'published') || isContentAdmin();
+      allow create: if isContentAdmin() && validBank(request.resource.data)
+        && request.resource.data.status == 'draft'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.publishedAt == null;
+      allow update: if isContentAdmin() && resource.data.status == 'draft'
+        && validBank(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt
+        && (request.resource.data.status == 'draft' && request.resource.data.publishedAt == null
+          || request.resource.data.status == 'published' && request.resource.data.publishedAt == request.time);
+      // Published versions are immutable, and versions cannot be deleted.
+    }
+    match /mbti_config/active {
+      allow get: if signedIn();
+      allow create, update: if isContentAdmin()
+        && request.resource.data.keys().hasAll(['testId', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['testId', 'updatedAt'])
+        && request.resource.data.testId is string
+        && getAfter(/databases/$(database)/documents/mbti_tests/$(request.resource.data.testId)).data.status == 'published'
+        && request.resource.data.updatedAt == request.time;
+    }
     match /users/{uid} {
       allow get: if isOwner(uid);
       allow create: if isOwner(uid)
-        && request.resource.data.keys().hasAll([
-          'username', 'points', 'lastMbti', 'lastMbtiDate', 'createdAt'
-        ])
-        && request.resource.data.keys().hasOnly([
-          'username', 'points', 'lastMbti', 'lastMbtiDate', 'createdAt'
-        ])
+        && request.resource.data.keys().hasAll(['username', 'points', 'lastMbti', 'lastMbtiDate', 'createdAt'])
+        && request.resource.data.keys().hasOnly(['username', 'points', 'lastMbti', 'lastMbtiDate', 'createdAt'])
         && request.resource.data.username == 'user-' + uid
-        && request.resource.data.points is int
-        && request.resource.data.points == 0
-        && request.resource.data.lastMbti == ''
-        && request.resource.data.lastMbtiDate == null
+        && request.resource.data.points is int && request.resource.data.points == 0
+        && request.resource.data.lastMbti == '' && request.resource.data.lastMbtiDate == null
         && request.resource.data.createdAt == request.time;
-
-      // Compatibility with the existing personal MBTI test, without XP.
-      // These client-computed results are not authoritative reward evidence.
       allow update: if isOwner(uid)
-        && request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['lastMbti', 'lastMbtiDate'])
-        && request.resource.data.lastMbti in [
-          'ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP',
-          'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'
-        ]
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastMbti', 'lastMbtiDate', 'lastMbtiResultId'])
+        && request.resource.data.lastMbtiResultId is string
+        && !exists(/databases/$(database)/documents/users/$(uid)/mbti_results/$(request.resource.data.lastMbtiResultId))
+        && getAfter(/databases/$(database)/documents/users/$(uid)/mbti_results/$(request.resource.data.lastMbtiResultId)).data.resultType == request.resource.data.lastMbti
         && request.resource.data.lastMbtiDate == request.time;
-    }
 
-    // No user listing, chat, public profiles, rewards or admin writes yet.
-    match /{document=**} {
-      allow read, write: if false;
+      match /mbti_results/{resultId} {
+        allow get: if isOwner(uid);
+        allow list: if isOwner(uid) && request.query.limit != null && request.query.limit <= 21;
+        // Results and the latest profile pointer must be committed atomically.
+        // Scores are client-computed; these records must NOT authorize XP.
+        allow create: if isOwner(uid) && validResult(request.resource.data)
+          && getAfter(/databases/$(database)/documents/users/$(uid)).data.lastMbtiResultId == resultId
+          && getAfter(/databases/$(database)/documents/users/$(uid)).data.lastMbti == request.resource.data.resultType
+          && getAfter(/databases/$(database)/documents/users/$(uid)).data.lastMbtiDate == request.time;
+        // History cannot be edited or deleted by clients.
+      }
     }
+    match /{document=**} { allow read, write: if false; }
   }
 }

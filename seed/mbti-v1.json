@@ -1,0 +1,107 @@
+{
+  "title": "Eksplorasi kepribadian Teencu",
+  "version": "v1",
+  "scoringVersion": "teencu-centered-v1",
+  "questions": [
+    {
+      "id": "q01",
+      "text": "Saya merasa lebih berenergi saat berada di acara sosial atau bersama banyak orang.",
+      "agreeWith": "E"
+    },
+    {
+      "id": "q02",
+      "text": "Saya lebih suka menghabiskan waktu sendiri untuk menyegarkan pikiran.",
+      "agreeWith": "I"
+    },
+    {
+      "id": "q03",
+      "text": "Saya suka berbicara untuk memecahkan masalah daripada merenungkannya dalam pikiran.",
+      "agreeWith": "E"
+    },
+    {
+      "id": "q04",
+      "text": "Saya cenderung berbicara lebih banyak daripada mendengarkan dalam percakapan.",
+      "agreeWith": "E"
+    },
+    {
+      "id": "q05",
+      "text": "Saya merasa nyaman bekerja dalam kelompok besar.",
+      "agreeWith": "E"
+    },
+    {
+      "id": "q06",
+      "text": "Saya lebih suka detail yang konkret dibandingkan ide-ide abstrak.",
+      "agreeWith": "S"
+    },
+    {
+      "id": "q07",
+      "text": "Saya fokus pada masa kini daripada memikirkan masa depan yang jauh.",
+      "agreeWith": "S"
+    },
+    {
+      "id": "q08",
+      "text": "Saya senang mengandalkan fakta daripada intuisi atau perasaan.",
+      "agreeWith": "S"
+    },
+    {
+      "id": "q09",
+      "text": "Saya sering memperhatikan detail kecil yang sering dilewatkan orang lain.",
+      "agreeWith": "S"
+    },
+    {
+      "id": "q10",
+      "text": "Saya lebih senang melihat \"gambaran besar\" daripada fokus pada detail kecil.",
+      "agreeWith": "N"
+    },
+    {
+      "id": "q11",
+      "text": "Saya membuat keputusan berdasarkan logika dan fakta, bukan emosi.",
+      "agreeWith": "T"
+    },
+    {
+      "id": "q12",
+      "text": "Saya lebih peduli tentang keadilan daripada menjaga perasaan orang lain.",
+      "agreeWith": "T"
+    },
+    {
+      "id": "q13",
+      "text": "Saya sering mempertimbangkan konsekuensi logis dalam setiap tindakan saya.",
+      "agreeWith": "T"
+    },
+    {
+      "id": "q14",
+      "text": "Saya lebih memilih menyelesaikan masalah daripada memikirkan dampak emosionalnya.",
+      "agreeWith": "T"
+    },
+    {
+      "id": "q15",
+      "text": "Saya cenderung mengambil keputusan dengan mempertimbangkan perasaan semua pihak.",
+      "agreeWith": "F"
+    },
+    {
+      "id": "q16",
+      "text": "Saya lebih suka merencanakan segalanya sebelumnya.",
+      "agreeWith": "J"
+    },
+    {
+      "id": "q17",
+      "text": "Saya merasa nyaman mengikuti jadwal dan struktur.",
+      "agreeWith": "J"
+    },
+    {
+      "id": "q18",
+      "text": "Saya lebih suka fleksibilitas daripada memiliki jadwal yang kaku.",
+      "agreeWith": "P"
+    },
+    {
+      "id": "q19",
+      "text": "Saya sering menunda pekerjaan hingga mendekati batas waktu.",
+      "agreeWith": "P"
+    },
+    {
+      "id": "q20",
+      "text": "Saya senang mengambil keputusan cepat dan menyelesaikan tugas dengan cepat.",
+      "agreeWith": "J"
+    }
+  ]
+}
