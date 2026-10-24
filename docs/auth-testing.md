@@ -30,9 +30,9 @@ Paket Firebase Spark cukup untuk tahap ini; tidak ada Cloud Functions atau Stora
 - Password tidak di-trim atau diubah; hanya email yang di-trim.
 - Reset password mengembalikan pesan umum, termasuk untuk email tidak terdaftar.
 - Rules hanya mengizinkan get profil sendiri dan create dengan nilai awal yang tepat.
-  Update hasil MBTI pribadi tetap diizinkan untuk kompatibilitas kode lama, tetapi
+  Hasil MBTI baru harus disimpan atomik bersama riwayat. Pengguna
   tidak boleh mengubah poin, username, createdAt, atau menambahkan role.
-- Perhitungan MBTI lama belum diperbaiki pada perubahan auth ini. Hasil dari client
+- Perhitungan MBTI sudah diaudit pada tahap berikutnya. Hasil dari client
   belum boleh digunakan sebagai bukti reward. Chat/leaderboard masih prototype.
 - Profil publik dan pertemanan belum dibuat; akses daftar semua users ditolak.
 - Logout mengganti seluruh navigator sesi. Riwayat halaman privat tidak dapat
@@ -54,7 +54,7 @@ pemulihan profil, sesi yang dipulihkan, dan pembersihan navigasi setelah logout.
 Tes Security Rules memakai emulator lokal, Node.js >=20, Firebase CLI, dan Java 21:
 
 ```powershell
-firebase emulators:exec --only auth,firestore --project demo-teencu "node --test test/firestore/rules.test.mjs"
+firebase emulators:exec --only auth,firestore --project demo-teencu "node --test test/firestore/*.test.mjs"
 ```
 
 Script menolak alamat emulator non-lokal. Tidak memerlukan npm install tambahan.
@@ -77,3 +77,5 @@ terminal tersebut sebelum menjalankan emulator.
 
 Test otomatis tidak membuktikan email benar-benar terkirim, konfigurasi cloud aktif,
 atau persistensi proses Android. Tiga hal tersebut harus diverifikasi di perangkat.
+
+Bank soal dan setup riwayat: lihat docs/mbti-bank-and-history.md.

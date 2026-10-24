@@ -3,6 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:teencu/question_mbti.dart';
+import 'fixtures/mbti_fixture.dart';
+
+QuestionMbti questionPage(
+        {required Future<void> Function(String) saveResult}) =>
+    QuestionMbti(
+        test: localMbtiTest,
+        sessionId: 'test-session',
+        saveResult: (submission) => saveResult(submission.score.type!));
 
 Future<void> answerTest(WidgetTester tester, List<int> ratings) async {
   const labels = [
@@ -31,7 +39,7 @@ void main() {
       'Cannot skip unanswered question, and Back retains selected rating',
       (tester) async {
     await tester
-        .pumpWidget(MaterialApp(home: QuestionMbti(saveResult: (_) async {})));
+        .pumpWidget(MaterialApp(home: questionPage(saveResult: (_) async {})));
     expect(
         tester
             .widget<ElevatedButton>(
@@ -58,7 +66,7 @@ void main() {
       (tester) async {
     final saved = <String>[];
     await tester
-        .pumpWidget(MaterialApp(home: QuestionMbti(saveResult: (type) async {
+        .pumpWidget(MaterialApp(home: questionPage(saveResult: (type) async {
       saved.add(type);
     })));
     await answerTest(tester, List.filled(20, 3));
@@ -89,7 +97,7 @@ void main() {
       await completion.future;
     }
 
-    await tester.pumpWidget(MaterialApp(home: QuestionMbti(saveResult: save)));
+    await tester.pumpWidget(MaterialApp(home: questionPage(saveResult: save)));
     await answerTest(
         tester, [5, 1, 5, 5, 5, 5, 5, 5, 5, 1, 5, 5, 5, 5, 1, 5, 5, 1, 1, 5]);
     await tester.tap(find.text('Selesai'));

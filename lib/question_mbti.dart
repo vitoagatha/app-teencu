@@ -1,16 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+
 import 'package:flutter/material.dart';
 
-import 'data/mbti_questions.dart';
+import 'model/mbti_test.dart';
 import 'model/mbti.dart';
 import 'result_mbti.dart';
 import 'services/mbti_scoring.dart';
 
 class QuestionMbti extends StatefulWidget {
-  const QuestionMbti({super.key, this.saveResult});
+  const QuestionMbti(
+      {super.key,
+      required this.test,
+      required this.sessionId,
+      required this.saveResult});
 
-  final Future<void> Function(String type)? saveResult;
+  final MbtiTestVersion test;
+  final String sessionId;
+  final Future<void> Function(MbtiSubmission submission) saveResult;
 
   @override
   State<QuestionMbti> createState() => _QuestionMbtiState();
@@ -22,15 +30,6 @@ class _QuestionMbtiState extends State<QuestionMbti> {
   bool _saving = false;
   String? _saveError;
 
-  Future<void> _saveResult(String type) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) throw StateError('Sesi login sudah berakhir.');
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-      'lastMbti': type,
-      'lastMbtiDate': FieldValue.serverTimestamp(),
-    });
-  }
-
   Future<void> _finishTest() async {
     if (_saving) return;
     setState(() {
@@ -38,7 +37,8 @@ class _QuestionMbtiState extends State<QuestionMbti> {
       _saveError = null;
     });
     try {
-      final score = calculateMbti(questions: mbtiQuestions, answers: _answers);
+      final score =
+          calculateMbti(questions: widget.test.questions, answers: _answers);
       final type = score.type;
       if (type == null) {
         final dimensions = score.tiedDimensions.map((d) => d.label).join(', ');
@@ -66,7 +66,7 @@ class _QuestionMbtiState extends State<QuestionMbti> {
         );
         if (review == true && mounted) {
           setState(() {
-            _currentQuestionIndex = mbtiQuestions.indexWhere(
+            _currentQuestionIndex = widget.test.questions.indexWhere(
               (question) => score.tiedDimensions.contains(question.dimension),
             );
           });
@@ -75,7 +75,19 @@ class _QuestionMbtiState extends State<QuestionMbti> {
       }
       final data = _mbtiData(type);
       if (data == null) throw StateError('Deskripsi hasil belum tersedia.');
-      await (widget.saveResult ?? _saveResult)(type);
+      // Stable for an exact retry, different if answers change after an error.
+      final fingerprint = sha256
+          .convert(utf8.encode(jsonEncode([
+            widget.test.id,
+            for (final question in widget.test.questions) _answers[question.id],
+          ])))
+          .toString()
+          .substring(0, 16);
+      await widget.saveResult(MbtiSubmission(
+        id: '${widget.sessionId}_$fingerprint',
+        test: widget.test,
+        answers: _answers,
+      ));
       if (!mounted) return;
       Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
         builder: (_) => ResultMbti(
@@ -99,9 +111,10 @@ class _QuestionMbtiState extends State<QuestionMbti> {
 
   @override
   Widget build(BuildContext context) {
-    final question = mbtiQuestions[_currentQuestionIndex];
+    final question = widget.test.questions[_currentQuestionIndex];
     final answered = _answers.containsKey(question.id);
-    final lastQuestion = _currentQuestionIndex == mbtiQuestions.length - 1;
+    final lastQuestion =
+        _currentQuestionIndex == widget.test.questions.length - 1;
     const ratings = [
       'Sangat Tidak Setuju',
       'Tidak Setuju',
@@ -116,6 +129,12 @@ class _QuestionMbtiState extends State<QuestionMbti> {
           backgroundColor: Colors.pink,
           foregroundColor: Colors.white,
           title: const Text('Pertanyaan MBTI'),
+          bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(24),
+              child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text('Versi ${widget.test.version}',
+                      style: const TextStyle(color: Colors.white)))),
           leading: IconButton(
             tooltip: 'Kembali',
             onPressed: _saving ? null : () => Navigator.pop(context),
@@ -130,10 +149,11 @@ class _QuestionMbtiState extends State<QuestionMbti> {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                    'Pertanyaan ${_currentQuestionIndex + 1} dari ${mbtiQuestions.length}'),
+                    'Pertanyaan ${_currentQuestionIndex + 1} dari ${widget.test.questions.length}'),
               ),
               LinearProgressIndicator(
-                value: (_currentQuestionIndex + 1) / mbtiQuestions.length,
+                value:
+                    (_currentQuestionIndex + 1) / widget.test.questions.length,
                 color: Colors.pink,
               ),
               Expanded(

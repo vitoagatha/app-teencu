@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'services/auth_service.dart';
+import 'mbti_history_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -87,6 +88,15 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
             const SizedBox(height: 24),
+            OutlinedButton.icon(
+              onPressed: () =>
+                  Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (_) => const MbtiHistoryScreen(),
+              )),
+              icon: const Icon(Icons.history),
+              label: const Text('Riwayat tes MBTI'),
+            ),
+            const SizedBox(height: 12),
             ElevatedButton(
               onPressed: _signingOut ? null : _logout,
               child: Text(_signingOut ? 'Keluar...' : 'Logout'),
