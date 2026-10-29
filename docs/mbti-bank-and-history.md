@@ -149,7 +149,7 @@ Emulator perlu Java 21. Script rules memverifikasi publikasi immutable, akses
 admin, draft privat, pointer aktif, versi historis, privasi dan pagination history,
 commit atomik, larangan poin/role, dan skrip PowerShell publisher terhadap emulator.
 
-Uji manual cloud:
+Uji manual cloud
 
 1. Publish/aktifkan v1. Selesaikan fixture ESTJ dan lihat profil serta riwayat.
 2. Buka detail riwayat: 20 jawaban, versi v1, skor dimensi sesuai fixture.
