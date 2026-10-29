@@ -6,11 +6,95 @@ import 'package:teencu/leaderboard.dart';
 import 'package:teencu/menu_chat.dart';
 import 'package:teencu/profile_page.dart';
 
-class HomePage extends StatelessWidget {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  User? user = FirebaseAuth.instance.currentUser;
-  String mbti = '';
-  
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, this.loadMbti, this.chatBuilder});
+
+  final Future<String> Function()? loadMbti;
+  final WidgetBuilder? chatBuilder;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _checkingMbti = false;
+  bool _loadingMbti = false;
+
+  Future<void> _openMbtiFeature({required bool chat}) async {
+    if (_checkingMbti) return;
+    setState(() {
+      _checkingMbti = true;
+      _loadingMbti = true;
+    });
+    try {
+      final mbti = await (widget.loadMbti ?? getUserMbti)()
+          .timeout(const Duration(seconds: 20));
+      if (!mounted) return;
+      setState(() => _loadingMbti = false);
+      if (chat) {
+        if (mbti.isEmpty) {
+          await showDialog<void>(
+            context: context,
+            useRootNavigator: false,
+            builder: (dialogContext) => AlertDialog(
+              title: const Text('Peringatan'),
+              content: const Text(
+                  'Kamu belum mengisi tes MBTI. Silahkan tes terlebih dahulu untuk menggunakan fitur chat.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+          return;
+        }
+        await Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: widget.chatBuilder ?? (_) => MenuChat(),
+        ));
+      } else {
+        if (mbti.isNotEmpty) {
+          final repeat = await showDialog<bool>(
+            context: context,
+            useRootNavigator: false,
+            builder: (dialogContext) => AlertDialog(
+              title: const Text('Peringatan'),
+              content: const Text('Apakah kamu ingin tes MBTI lagi?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: const Text('Nggak dulu deh'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  child: const Text('Iya nih'),
+                ),
+              ],
+            ),
+          );
+          if (!mounted || repeat != true) return;
+        }
+        await Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => MbtiExplanationPage(),
+        ));
+      }
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            'Status MBTI belum dapat dimuat. Periksa koneksi lalu coba lagi.'),
+      ));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _checkingMbti = false;
+          _loadingMbti = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,76 +153,23 @@ class HomePage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 40),
-            // Tombol Tes MBTI
-            _buildButton(context, "Tes MBTI", Color.fromARGB(500, 248,55,88), () async {
-              mbti = await getUserMbti();
-                if (mbti == ''){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MbtiExplanationPage()),
-                  );
-                  return;
-                } else {
-                  showDialog(
-                    useRootNavigator: false,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Peringatan'),
-                        content: Text('Apakah kamu ingin tes MBTI lagi?'),
-                        actions: [
-                          TextButton(
-                            style: TextButton.styleFrom(foregroundColor: Colors.black),
-                            onPressed: () {
-                              Navigator.pop(context); // Menutup dialog
-                            },
-                            child: Text('Nggak dulu deh'),
-                          ),
-                          TextButton(
-                            style: TextButton.styleFrom(foregroundColor: Colors.black),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => MbtiExplanationPage()),
-                              );
-                            },
-                            child: Text('Iya nih'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },),
-            SizedBox(height: 16),
-            // Tombol Chat
-            _buildButton(context, "Chat", Color.fromARGB(500, 248,55,88), () {
-              showDialog(
-                useRootNavigator: false,
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Peringatan'),
-                    content: Text('Kamu belum mengisi tes MBTI. Silahkan tes terlebih dahulu untuk menggunakan fitur chat.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          return;
-                        },
-                        child: Text('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
-              Navigator.push(
+            // Read the saved result on each tap, including after a new test.
+            _buildButton(
                 context,
-                MaterialPageRoute(builder: (context) => MenuChat()),
-              );
-            }),
-            SizedBox(height: 16),
+                "Tes MBTI",
+                const Color.fromARGB(255, 248, 55, 88),
+                _checkingMbti ? null : () => _openMbtiFeature(chat: false)),
+            const SizedBox(height: 16),
+            _buildButton(
+                context,
+                "Chat",
+                const Color.fromARGB(255, 248, 55, 88),
+                _checkingMbti ? null : () => _openMbtiFeature(chat: true)),
+            if (_loadingMbti) const LinearProgressIndicator(),
+            const SizedBox(height: 16),
             // Tombol Leaderboard
-            _buildButton(context, "Leaderboard", Color.fromARGB(500, 248,55,88), () {
+            _buildButton(
+                context, "Leaderboard", Color.fromARGB(500, 248, 55, 88), () {
               // Navigasi ke halaman Leaderboard
               Navigator.push(
                 context,
@@ -152,7 +183,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildButton(
-      BuildContext context, String text, Color color, VoidCallback onPressed) {
+      BuildContext context, String text, Color color, VoidCallback? onPressed) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -172,11 +203,15 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Future<String> getUserMbti() async{
-    DocumentSnapshot doc = await firestore.collection('users').doc(user!.uid).get();
-    if (doc.exists && doc.data() != null) {
-      mbti = doc.get('lastMbti') as String;
-    }
-    return mbti;
+  Future<String> getUserMbti() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw StateError('No active session');
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get(const GetOptions(source: Source.server));
+    final data = doc.data();
+    if (data == null) throw StateError('Profile missing');
+    return data['lastMbti'] as String? ?? '';
   }
 }
