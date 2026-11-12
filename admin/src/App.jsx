@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { CBadge } from '@coreui/react';
 import { getFirebaseServices } from './lib/firebase.js';
 import { createAdminAccess } from './services/adminAccess.js';
 import { AdminSessionProvider } from './auth/AdminSessionProvider.jsx';
 import RequireAdmin from './auth/RequireAdmin.jsx';
-import OverviewPage from './pages/OverviewPage.jsx';
+import BankWorkspace from './components/BankWorkspace.jsx';
 
 export default function App() {
   const [runtime] = useState(() => {
@@ -12,17 +13,16 @@ export default function App() {
       return { access: createAdminAccess(services), target: services.target };
     } catch { return { error: true }; }
   });
-  return <main className="setup">
-    <header><a className="brand" href="/">Teencu<span>Admin</span></a></header>
+  return <div className="app-root">
     {runtime.error ? <section className="auth-panel" role="alert">
       <h1>Konfigurasi belum siap.</h1>
       <p>Periksa konfigurasi Firebase Web pada .env.local, lalu restart dashboard.</p>
     </section> : <>
-      <p className="environment">{runtime.target === 'emulator' ? 'Lingkungan pengujian lokal · demo-teencu' : 'Firebase cloud · teencu-dev'}</p>
       <AdminSessionProvider access={runtime.access}>
-        <RequireAdmin><OverviewPage /></RequireAdmin>
+        <RequireAdmin environment={<CBadge color={runtime.target === 'emulator' ? 'warning' : 'info'} textBgColor={runtime.target === 'emulator' ? 'warning' : 'info'}>{runtime.target === 'emulator' ? 'Emulator · demo-teencu' : 'Cloud · teencu-dev'}</CBadge>}>
+          <BankWorkspace target={runtime.target} />
+        </RequireAdmin>
       </AdminSessionProvider>
     </>}
-    <footer>Teencu · Curhat tanpa takut dihakimi.</footer>
-  </main>;
+  </div>;
 }

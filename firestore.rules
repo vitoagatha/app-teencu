@@ -53,6 +53,8 @@ service cloud.firestore {
     }
     match /mbti_tests/{testId} {
       allow get: if (signedIn() && resource.data.status == 'published') || isContentAdmin();
+      allow list: if isContentAdmin() && request.query.limit != null
+        && request.query.limit > 0 && request.query.limit <= 21;
       allow create: if isContentAdmin() && validBank(request.resource.data)
         && request.resource.data.status == 'draft'
         && request.resource.data.createdAt == request.time
