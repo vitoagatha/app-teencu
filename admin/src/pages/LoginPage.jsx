@@ -1,3 +1,4 @@
+import { CButton, CFormCheck, CFormInput, CForm } from '@coreui/react';
 import { useRef, useState } from 'react';
 import { useAdminSession } from '../auth/AdminSessionProvider.jsx';
 import { loginErrorMessage } from '../services/adminAccess.js';
@@ -25,16 +26,16 @@ export default function LoginPage() {
     <p className="eyebrow">RUANG PENGELOLAAN KONTEN</p>
     <h1 id="login-title">Selamat datang kembali.</h1>
     <p>Masuk dengan akun yang memiliki izin admin konten Teencu.</p>
-    <form onSubmit={submit} aria-busy={busy}>
+    <CForm onSubmit={submit} aria-busy={busy}>
       <fieldset disabled={busy}>
         <label htmlFor="email">Email</label>
-        <input id="email" type="email" autoComplete="username" required value={email} onChange={(event) => setEmail(event.target.value)} />
+        <CFormInput id="email" type="email" autoComplete="username" required value={email} onChange={(event) => setEmail(event.target.value)} />
         <label htmlFor="password">Password</label>
-        <input id="password" type={visible ? 'text' : 'password'} autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} />
-        <label className="checkbox"><input type="checkbox" checked={visible} onChange={(event) => setVisible(event.target.checked)} />Tampilkan password</label>
+        <CFormInput id="password" type={visible ? 'text' : 'password'} autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} />
+        <label className="checkbox"><CFormCheck type="checkbox" checked={visible} onChange={(event) => setVisible(event.target.checked)} />Tampilkan password</label>
         {error && <p role="alert" className="config-error">{error}</p>}
-        <button type="submit">{busy ? 'Masuk…' : 'Masuk'}</button>
+        <CButton color="primary" type="submit">{busy ? 'Masuk…' : 'Masuk'}</CButton>
       </fieldset>
-    </form>
+    </CForm>
   </section>;
 }

@@ -1,32 +1,57 @@
-:root { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #352338; background: #fcf8fb; font-synthesis: none; text-rendering: optimizeLegibility; }
-* { box-sizing: border-box; }
+/* CoreUI layout adapted to Teencu branding. */
+:root { --cui-primary: #a83f7b; --cui-primary-rgb: 168,63,123; --cui-body-bg: #f3f4f7; --cui-link-color: #93356c; }
 body { margin: 0; }
-.setup { max-width: 1100px; min-height: 100svh; margin: auto; padding: 36px 40px; display: flex; flex-direction: column; }
-.brand { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: #a83f7b; text-decoration: none; }
-.brand span { font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-left: 12px; color: #756478; }
-.intro { padding: 90px 0 64px; max-width: 680px; }
-.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #a83f7b; }
-h1 { font-size: clamp(32px, 5vw, 58px); line-height: 1.15; letter-spacing: -2px; margin: 22px 0; }
-.description { font-size: 18px; line-height: 1.7; color: #756478; }
-.status-card { display: flex; gap: 16px; padding: 24px; margin-top: 36px; border: 1px solid #eadce7; border-radius: 16px; background: white; }
-.status-dot { width: 10px; height: 10px; flex-shrink: 0; border-radius: 50%; background: #a83f7b; margin-top: 6px; }
-h2 { font-size: 17px; margin: 0 0 8px; }
-.status-card p, .environment { font-size: 14px; line-height: 1.7; color: #756478; margin: 0; }
-.environment { margin-top: 20px; }
-.config-error { color: #a31c38; overflow-wrap: anywhere; }
-footer { margin-top: auto; padding-top: 24px; border-top: 1px solid #eadce7; color: #756478; font-size: 13px; }
-@media (max-width: 600px) { .setup { padding: 24px; } .intro { padding-top: 60px; } h1 { letter-spacing: -1px; } }
-.auth-panel { max-width: 640px; padding: 48px 0 64px; }
-.auth-panel h1 { font-size: clamp(28px, 4vw, 44px); }
-.auth-panel > p { line-height: 1.7; overflow-wrap: anywhere; }
-form { max-width: 440px; margin-top: 28px; }
+.card { --cui-card-bg: #fff; }
+.header { --cui-header-bg: #fff; }
+.teencu-sidebar-brand { text-decoration: none; }
+.app-root { min-height: 100vh; }
+.auth-shell { min-height: 100svh; display: flex; align-items: center; padding: 48px 16px; background: radial-gradient(ellipse at top left, #f6dfed, transparent 65%), #f3f4f7; }
+.auth-brand { text-align: center; font-size: 34px; font-weight: 800; color: #a83f7b; letter-spacing: -1px; margin-bottom: 16px; }
+.auth-brand span { font-size: 12px; letter-spacing: 2px; color: #686879; margin-left: 8px; }
+.auth-card { max-width: 560px; }
+.auth-panel h1 { font-size: clamp(26px, 4vw, 34px); font-weight: 700; margin: 14px 0; }
+.auth-panel p { line-height: 1.7; }
+.eyebrow { color: #93356c; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 8px; }
+.auth-panel form { margin-top: 24px; }
 fieldset { border: 0; padding: 0; margin: 0; }
-label { display: block; font-size: 14px; font-weight: 600; margin: 18px 0 8px; }
-input:not([type="checkbox"]) { width: 100%; padding: 13px; border: 1px solid #ad94aa; border-radius: 8px; font: inherit; background: white; }
-.checkbox { display: flex; gap: 8px; align-items: center; font-weight: 400; }
-button { border: 1px solid #a83f7b; background: #a83f7b; color: white; border-radius: 8px; padding: 12px 20px; font: inherit; font-weight: 600; cursor: pointer; }
-button.secondary { background: white; color: #873263; }
-button:disabled, fieldset:disabled { opacity: .65; cursor: wait; }
-form button { margin-top: 16px; width: 100%; }
-.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-:focus-visible { outline: 3px solid #59348a; outline-offset: 3px; }
+form label { display: block; font-size: 14px; font-weight: 600; margin: 16px 0 8px; }
+.checkbox { display: flex; align-items: center; gap: 10px; font-weight: 400; }
+.checkbox .form-check { min-height: auto; margin: 0; }
+form .btn[type=submit] { margin-top: 20px; }
+.auth-panel form .btn[type=submit] { width: 100%; }
+.btn-primary { --cui-btn-bg: #a83f7b; --cui-btn-border-color: #a83f7b; --cui-btn-hover-bg: #8b3265; --cui-btn-hover-border-color: #8b3265; --cui-btn-active-bg: #7c2c5a; --cui-btn-active-border-color: #7c2c5a; --cui-btn-disabled-bg: #a83f7b; --cui-btn-disabled-border-color: #a83f7b; }
+.config-error { color: #a31c38; overflow-wrap: anywhere; }
+.admin-sidebar { --cui-sidebar-bg: #292538; --cui-sidebar-brand-color: #fff; }
+.teencu-sidebar-brand { font-size: 25px; font-weight: 800; letter-spacing: -.5px; }
+.teencu-sidebar-brand small { font-size: 10px; letter-spacing: 2px; margin-left: 8px; color: #e4a8cc; }
+.admin-sidebar .nav-link { width: 100%; text-align: left; }
+.admin-sidebar .nav-link.active { background: #a83f7b; }
+.sidebar-note { padding: 24px; font-size: 13px; color: #e2d9e5; border-top: 1px solid #494354; }
+.sidebar-note small { color: #b5aebe; }
+.admin-wrapper { min-height: 100svh; display: flex; flex-direction: column; }
+.admin-wrapper .header { min-height: 70px; }
+.header-account { display: flex; align-items: center; gap: 12px; }
+.account-email { font-size: 13px; color: #636777; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.workspace { flex: 1; padding: 24px; overflow-wrap: anywhere; }
+.workspace > .container-fluid { max-width: 1400px; margin: 0 auto; }
+.workspace h1 { font-size: clamp(26px, 3vw, 34px); font-weight: 700; margin: 20px 0 10px; }
+.workspace h2 { font-size: 18px; font-weight: 600; }
+.workspace p { line-height: 1.7; }
+.breadcrumb-button { border: 0; padding: 0; background: none; color: #93356c; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.status-card { margin: 24px 0; }
+.status-card .btn { margin-top: 12px; }
+.bank-list { margin-top: 28px; }
+.page-summary { color: #636777; font-size: 13px; }
+.table-scroll { overflow-x: auto; }
+.table th { color: #636777; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; padding: 16px; }
+.table td { padding: 16px; min-width: 110px; font-size: 14px; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.bank-meta { display: grid; grid-template-columns: minmax(100px, 160px) 1fr; gap: 12px; margin: 24px 0; }
+dt { color: #636777; } dd { margin: 0; }
+.question-list { padding-left: 28px; }.question-list li { padding: 14px 8px; border-bottom: 1px solid var(--cui-border-color); }
+.question-list p { margin: 0 0 6px; }.question-list small { color: #636777; }
+.copy-panel { margin-top: 28px; }.copy-panel form { max-width: 560px; }
+:focus-visible { outline: 3px solid #8359c7; outline-offset: 3px; }
+@media (min-width: 992px) { .admin-wrapper { margin-left: var(--cui-sidebar-width, 256px); } }
+@media (max-width: 767px) { .workspace { padding: 16px 4px; } .account-email { display: none; } .header-account { gap: 8px; } .header .fw-semibold { font-size: 13px; } }

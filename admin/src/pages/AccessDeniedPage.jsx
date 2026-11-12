@@ -1,3 +1,4 @@
+import { CButton } from '@coreui/react';
 import { useAdminSession } from '../auth/AdminSessionProvider.jsx';
 
 export default function AccessDeniedPage() {
@@ -7,8 +8,8 @@ export default function AccessDeniedPage() {
     <h1>Akun ini belum memiliki izin admin.</h1>
     <p>{session.user.email || 'Akun yang digunakan'} sudah masuk. Hubungi pemilik proyek untuk mendapatkan akses pengelolaan konten.</p>
     <div className="actions">
-      <button onClick={() => controller.logout()}>Keluar / ganti akun</button>
-      <button className="secondary" onClick={() => controller.retry()}>Periksa izin lagi</button>
+      <CButton color="primary" onClick={() => controller.logout()}>Keluar / ganti akun</CButton>
+      <CButton color="secondary" variant="outline" onClick={() => controller.retry()}>Periksa izin lagi</CButton>
     </div>
   </section>;
 }
