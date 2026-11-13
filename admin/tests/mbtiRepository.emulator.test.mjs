@@ -52,10 +52,25 @@ test('Admin repository: bounded query, cursor, active version, copying and revoc
     await assert.rejects(repository.copyToDraft(`${prefix}-0`, `${prefix}-copy`, 'Overwrite', 'v3'));
     assert.equal((await repository.loadDetail(`${prefix}-copy`)).title, 'Copied bank');
     assert.equal((await repository.loadDetail(`${prefix}-0`)).status, 'published');
+    const baseline = await repository.loadDetail(`${prefix}-copy`);
+    const edited = { ...baseline, title: 'Edited title', questions: [...baseline.questions].reverse() };
+    const saved = await repository.saveDraft(baseline.id, edited, baseline);
+    assert.equal(saved.title, 'Edited title');
+    const reloaded = await repository.loadDetail(baseline.id);
+    assert.deepEqual(reloaded.questionIds, ['q3', 'q2', 'q1', 'q0']);
+    assert.equal(reloaded.createdAt.toMillis(), baseline.createdAt.toMillis());
+    await assert.rejects(repository.saveDraft(baseline.id, { ...baseline, title: 'Stale overwrite' }, baseline), /sudah berubah/);
+    const published = await repository.loadDetail(`${prefix}-0`);
+    await assert.rejects(repository.saveDraft(published.id, { ...published, title: 'Forbidden' }, published), /published/);
+    await repository.saveDraft(`${prefix}-new`, { ...baseline, title: 'New draft' });
+    assert.equal((await repository.loadDetail(`${prefix}-new`)).status, 'draft');
+    await assert.rejects(repository.saveDraft(`${prefix}-new`, baseline), /sudah digunakan/);
+    await assert.rejects(repository.saveDraft(`${prefix}-invalid`, { ...baseline, questions: [] }));
     await ownerWrite(`content_admins/${user.uid}`, { enabled: { booleanValue: false } });
     await assert.rejects(repository.loadPage(), (e) => e.code === 'permission-denied');
     await assert.rejects(repository.loadDetail(`${prefix}-1`), (e) => e.code === 'permission-denied');
     await assert.rejects(repository.copyToDraft(`${prefix}-0`, `${prefix}-blocked`, 'Denied', 'v9'));
+    await assert.rejects(repository.saveDraft(baseline.id, { ...reloaded, title: 'Revoked' }, reloaded));
     assert.equal((await getDocFromServer(doc(firestore, 'mbti_tests', `${prefix}-0`))).exists(), true);
   } finally { await terminate(firestore); await deleteApp(app); }
 });
