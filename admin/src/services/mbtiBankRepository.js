@@ -1,9 +1,34 @@
 import { collection, doc, documentId, getDocFromServer, getDocsFromServer, limit, orderBy, query, runTransaction, serverTimestamp, startAfter } from 'firebase/firestore';
 import { pageFromDocuments, readBank, validateBank } from '../domain/mbtiBank.js';
+import { fingerprint, validateDraft } from '../domain/mbtiDraft.js';
 
 export function createMbtiBankRepository({ auth, firestore }, uid) {
   const assertSession = () => { if (auth.currentUser?.uid !== uid) throw new Error('Sesi berubah. Silakan masuk kembali.'); };
   return {
+    async saveDraft(id, bank, baseline = null) {
+      assertSession();
+      // Copy inputs before the async transaction; retries must use the same edit.
+      const content = validateDraft(id, bank);
+      const expected = baseline ? fingerprint(baseline) : null;
+      const reference = doc(firestore, 'mbti_tests', id);
+      const saved = await runTransaction(firestore, async (transaction) => {
+        assertSession();
+        const snapshot = await transaction.get(reference);
+        if (!baseline) {
+          if (snapshot.exists()) throw new Error('ID paket sudah digunakan. Pilih ID lain.');
+          transaction.set(reference, { ...content, status: 'draft', createdAt: serverTimestamp(), publishedAt: null });
+          return null;
+        }
+        if (!snapshot.exists()) throw new Error('Draft tidak ditemukan. Muat ulang data.');
+        const current = readBank(snapshot);
+        if (current.status !== 'draft') throw new Error('Paket sudah published dan tidak dapat diedit.');
+        if (fingerprint(current) !== expected) throw new Error('Draft sudah berubah di tab/admin lain. Muat ulang sebelum menyimpan.');
+        transaction.update(reference, content);
+        return { ...current, ...content };
+      });
+      assertSession();
+      return saved;
+    },
     async loadPage(cursor = null) {
       assertSession();
       const constraints = [orderBy('createdAt', 'desc'), orderBy(documentId(), 'desc')];

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CCard, CCardBody } from '@coreui/react';
 import { BankStatus, formatDate } from '../components/BankMetadata.jsx';
 
-export default function BankDetailPage({ id, repository, onBack, onSelect }) {
+export default function BankDetailPage({ id, repository, onBack, onSelect, onEdit }) {
   const [result, setResult] = useState({ loading: true });
   const [revision, setRevision] = useState(0);
   const [copying, setCopying] = useState(false);
@@ -34,12 +34,13 @@ export default function BankDetailPage({ id, repository, onBack, onSelect }) {
     <CButton color="secondary" variant="outline" disabled={copying} onClick={onBack}>Kembali ke daftar</CButton>
     {result.loading ? <p role="status">Memuat detail…</p> : result.error ? <div role="alert"><p>Paket tidak ditemukan, tidak valid, atau belum dapat dimuat.</p><CButton color="primary" onClick={() => setRevision((v) => v + 1)}>Coba lagi</CButton></div> : <>
       <h1>{result.bank.title}</h1><BankStatus bank={result.bank} />
+      {result.bank.status === 'draft' ? <div className="actions"><CButton color="primary" onClick={onEdit}>Edit pertanyaan</CButton></div> : <p className="mt-3 text-body-secondary">Versi published terkunci. Salin sebagai draft untuk mengubah pertanyaan.</p>}
       <dl className="bank-meta"><dt>ID paket</dt><dd>{id}</dd><dt>Versi</dt><dd>{result.bank.version}</dd><dt>Algoritma</dt><dd>{result.bank.scoringVersion}</dd><dt>Dibuat</dt><dd>{formatDate(result.bank.createdAt)}</dd><dt>Dipublikasikan</dt><dd>{formatDate(result.bank.publishedAt)}</dd></dl>
       <h2>{result.bank.questions.length} pertanyaan</h2>
       <ol className="question-list">{result.bank.questions.map((q) => <li key={q.id}><p>{q.text}</p><small>{q.id} · Setuju mengarah ke {q.agreeWith}</small></li>)}</ol>
-      <CCard className="copy-panel shadow-sm"><CCardBody><h2>Salin menjadi draft baru</h2><p>Paket asal tetap tersimpan. Salinan tidak langsung menjadi versi aktif. Editor pertanyaan tersedia pada tahap berikutnya.</p>
+      <CCard className="copy-panel shadow-sm"><CCardBody><h2>Salin menjadi draft baru</h2><p>Buat paket baru berdasarkan pertanyaan paket ini. Setelah tersimpan, detail salinan akan terbuka; gunakan tombol Edit pertanyaan di atas untuk mengubahnya.</p>
         <CForm onSubmit={copy}><fieldset disabled={copying}>
-          <label htmlFor="new-id">ID paket baru</label><CFormInput id="new-id" required maxLength={80} pattern="[a-zA-Z0-9_-]+" placeholder="mbti-v2" value={newId} onChange={(e) => setNewId(e.target.value)} />
+          <label htmlFor="new-id">ID paket baru</label><CFormInput id="new-id" required maxLength={80} placeholder="mbti-v2" value={newId} onChange={(e) => setNewId(e.target.value)} />
           <label htmlFor="copy-title">Judul</label><CFormInput id="copy-title" required maxLength={160} value={title} onChange={(e) => setTitle(e.target.value)} />
           <label htmlFor="copy-version">Label versi baru</label><CFormInput id="copy-version" required maxLength={80} placeholder="v2" value={version} onChange={(e) => setVersion(e.target.value)} />
           {error && <p role="alert" className="config-error">{error}</p>}<CButton color="primary" type="submit">{copying ? 'Menyimpan…' : 'Simpan salinan draft'}</CButton>
