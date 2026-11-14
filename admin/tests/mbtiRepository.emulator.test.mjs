@@ -66,11 +66,45 @@ test('Admin repository: bounded query, cursor, active version, copying and revoc
     assert.equal((await repository.loadDetail(`${prefix}-new`)).status, 'draft');
     await assert.rejects(repository.saveDraft(`${prefix}-new`, baseline), /sudah digunakan/);
     await assert.rejects(repository.saveDraft(`${prefix}-invalid`, { ...baseline, questions: [] }));
+    // Publication validates exactly the saved content that was reviewed.
+    await assert.rejects(repository.prepareActivation(`${prefix}-new`), /published/);
+    await assert.rejects(repository.publish(baseline), /berubah/);
+    const pointerBeforePublish = (await getDocFromServer(doc(firestore, 'mbti_config/active'))).data();
+    await repository.publish(reloaded);
+    const publishedCopy = await repository.loadDetail(baseline.id);
+    assert.equal(publishedCopy.status, 'published');
+    assert.ok(publishedCopy.publishedAt.toDate());
+    assert.equal(publishedCopy.createdAt.toMillis(), baseline.createdAt.toMillis());
+    assert.deepEqual((await getDocFromServer(doc(firestore, 'mbti_config/active'))).data(), pointerBeforePublish);
+    await assert.rejects(repository.publish(reloaded), /published/);
+    await assert.rejects(repository.saveDraft(publishedCopy.id, { ...publishedCopy, title: 'Locked' }, publishedCopy));
+    const newDraft = await repository.loadDetail(`${prefix}-new`);
+    await repository.publish(newDraft);
+    const staleActivation = await repository.prepareActivation(publishedCopy.id);
+    const another = await repository.prepareActivation(newDraft.id);
+    await repository.activate(another);
+    assert.equal((await repository.loadActive()).id, newDraft.id);
+    await assert.rejects(repository.activate(staleActivation), /Versi aktif berubah/);
+    // Switch back to an old version; an old dialog still must fail (ABA).
+    await repository.activate(await repository.prepareActivation(published.id));
+    assert.equal((await repository.loadActive()).id, published.id);
+    await assert.rejects(repository.activate(staleActivation), /Versi aktif berubah/);
+    await repository.activate(await repository.prepareActivation(publishedCopy.id));
+    const alreadyActive = await repository.prepareActivation(publishedCopy.id);
+    const beforeNoop = (await getDocFromServer(doc(firestore, 'mbti_config/active'))).data();
+    await repository.activate(alreadyActive);
+    await repository.activate(alreadyActive);
+    assert.deepEqual((await getDocFromServer(doc(firestore, 'mbti_config/active'))).data(), beforeNoop);
+    assert.equal((await repository.loadDetail(published.id)).status, 'published');
+    const revokedPublish = await repository.loadDetail(`${prefix}-1`);
+    const revokedActivation = await repository.prepareActivation(published.id);
     await ownerWrite(`content_admins/${user.uid}`, { enabled: { booleanValue: false } });
     await assert.rejects(repository.loadPage(), (e) => e.code === 'permission-denied');
     await assert.rejects(repository.loadDetail(`${prefix}-1`), (e) => e.code === 'permission-denied');
     await assert.rejects(repository.copyToDraft(`${prefix}-0`, `${prefix}-blocked`, 'Denied', 'v9'));
     await assert.rejects(repository.saveDraft(baseline.id, { ...reloaded, title: 'Revoked' }, reloaded));
+    await assert.rejects(repository.publish(revokedPublish));
+    await assert.rejects(repository.activate(revokedActivation), (e) => e.code === 'permission-denied');
     assert.equal((await getDocFromServer(doc(firestore, 'mbti_tests', `${prefix}-0`))).exists(), true);
   } finally { await terminate(firestore); await deleteApp(app); }
 });

@@ -40,7 +40,7 @@ export default function BankWorkspace({ target }) {
       <main id="main-content" className="workspace"><CContainer fluid>
         <CBreadcrumb><CBreadcrumbItem>Admin</CBreadcrumbItem><CBreadcrumbItem active={!selected && !editing}>{(selected || editing) ? <button className="breadcrumb-button" onClick={() => open(null)}>Bank soal</button> : 'Bank soal'}</CBreadcrumbItem>{(selected || editing) && <CBreadcrumbItem active>{editing ? 'Editor draft' : 'Detail paket'}</CBreadcrumbItem>}</CBreadcrumb>
         {editing ? <BankEditorPage key={selected || 'new-draft'} id={selected} repository={repository} registerGuard={registerGuard} onBack={() => open(selected)} onCreated={(id) => { setSelected(id); setEditing(false); }} />
-          : selected ? <BankDetailPage key={selected} id={selected} repository={repository} onBack={() => open(null)} onSelect={(id) => open(id)} onEdit={() => open(selected, true)} />
+          : selected ? <BankDetailPage key={selected} id={selected} repository={repository} registerGuard={registerGuard} onBack={() => open(null)} onSelect={(id) => open(id)} onEdit={() => open(selected, true)} />
           : <OverviewPage repository={repository} onSelect={(id) => open(id)} onCreate={() => open(null, true)} />}
       </CContainer></main>
       <CFooter><span>Teencu · Admin konten</span><span>UI dengan <a href="https://coreui.io/product/free-react-admin-template/" target="_blank" rel="noreferrer">CoreUI Free React</a></span></CFooter>
