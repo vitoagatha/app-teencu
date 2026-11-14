@@ -1,15 +1,28 @@
-import { CButton, CFormInput, CForm } from '@coreui/react';
+import { CAlert, CButton, CFormInput, CForm } from '@coreui/react';
 import { useEffect, useRef, useState } from 'react';
 import { CCard, CCardBody } from '@coreui/react';
 import { BankStatus, formatDate } from '../components/BankMetadata.jsx';
 import { createPreview } from '../domain/mbtiScoring.js';
 import BankPreviewPage from './BankPreviewPage.jsx';
+import PublicationActions from '../components/PublicationActions.jsx';
 
-export default function BankDetailPage({ id, repository, onBack, onSelect, onEdit }) {
+export default function BankDetailPage({ id, repository, onBack, onSelect, onEdit, registerGuard }) {
   const [result, setResult] = useState({ loading: true });
   const [preview, setPreview] = useState(null);
   const [revision, setRevision] = useState(0);
   const [copying, setCopying] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [notice, setNotice] = useState('');
+  const [active, setActive] = useState(null);
+  const busy = copying || publishing;
+  const operation = useRef(false);
+  operation.current = busy;
+  useEffect(() => { registerGuard(() => !operation.current); return () => registerGuard(null); }, [registerGuard]);
+  useEffect(() => {
+    let current = true;
+    repository.loadActive().then((value) => { if (current) setActive(value); }).catch(() => { if (current) setActive(null); });
+    return () => { current = false; };
+  }, [repository, revision]);
   const [error, setError] = useState('');
   const [newId, setNewId] = useState('');
   const [title, setTitle] = useState('');
@@ -26,25 +39,31 @@ export default function BankDetailPage({ id, repository, onBack, onSelect, onEdi
   }, [id, repository, revision]);
   async function copy(event) {
     event.preventDefault();
-    if (pending.current) return;
+    if (pending.current || publishing) return;
     pending.current = true;
     setCopying(true); setError('');
-    try { await repository.copyToDraft(id, newId.trim(), title, version); if (mounted.current) onSelect(newId.trim()); }
+    try {
+      await repository.copyToDraft(id, newId.trim(), title, version);
+      if (mounted.current) { operation.current = false; onSelect(newId.trim()); }
+    }
     catch (cause) { if (mounted.current) setError(cause.code ? 'Draft belum dapat disimpan. Periksa koneksi dan izin admin. Jika ID sudah ada, buka paket tersebut untuk memeriksa hasilnya.' : cause.message); }
     finally { pending.current = false; if (mounted.current) setCopying(false); }
   }
   if (preview) return <BankPreviewPage bank={preview} onBack={() => setPreview(null)} />;
   return <>
-    <CButton color="secondary" variant="outline" disabled={copying} onClick={onBack}>Kembali ke daftar</CButton>
+    <CButton color="secondary" variant="outline" disabled={busy} onClick={onBack}>Kembali ke daftar</CButton>
+    {notice && <CAlert color="success" className="mt-3" role="status">{notice}</CAlert>}
+    <CButton className="ms-2" color="secondary" variant="outline" disabled={busy} onClick={() => { setNotice(''); setRevision((v) => v + 1); }}>Muat ulang status</CButton>
     {result.loading ? <p role="status">Memuat detail…</p> : result.error ? <div role="alert"><p>Paket tidak ditemukan, tidak valid, atau belum dapat dimuat.</p><CButton color="primary" onClick={() => setRevision((v) => v + 1)}>Coba lagi</CButton></div> : <>
-      <h1>{result.bank.title}</h1><BankStatus bank={result.bank} />
-      <div className="actions"><CButton color="secondary" variant="outline" disabled={copying} onClick={() => { try { setPreview(createPreview(id, result.bank)); } catch (cause) { setError(cause.message); } }}>Pratinjau tes</CButton></div>
-      {result.bank.status === 'draft' ? <div className="actions"><CButton color="primary" onClick={onEdit}>Edit pertanyaan</CButton></div> : <p className="mt-3 text-body-secondary">Versi published terkunci. Salin sebagai draft untuk mengubah pertanyaan.</p>}
+      <h1>{result.bank.title}</h1><BankStatus bank={result.bank} active={active?.id === id} />
+      <PublicationActions bank={result.bank} repository={repository} disabled={copying} onBusyChange={setPublishing} onUpdated={(message) => { setNotice(message); setRevision((v) => v + 1); }} />
+      <div className="actions"><CButton color="secondary" variant="outline" disabled={busy} onClick={() => { try { setPreview(createPreview(id, result.bank)); } catch (cause) { setError(cause.message); } }}>Pratinjau tes</CButton></div>
+      {result.bank.status === 'draft' ? <div className="actions"><CButton color="primary" disabled={busy} onClick={onEdit}>Edit pertanyaan</CButton></div> : <p className="mt-3 text-body-secondary">Versi published terkunci. Salin sebagai draft untuk mengubah pertanyaan.</p>}
       <dl className="bank-meta"><dt>ID paket</dt><dd>{id}</dd><dt>Versi</dt><dd>{result.bank.version}</dd><dt>Algoritma</dt><dd>{result.bank.scoringVersion}</dd><dt>Dibuat</dt><dd>{formatDate(result.bank.createdAt)}</dd><dt>Dipublikasikan</dt><dd>{formatDate(result.bank.publishedAt)}</dd></dl>
       <h2>{result.bank.questions.length} pertanyaan</h2>
       <ol className="question-list">{result.bank.questions.map((q) => <li key={q.id}><p>{q.text}</p><small>{q.id} · Setuju mengarah ke {q.agreeWith}</small></li>)}</ol>
       <CCard className="copy-panel shadow-sm"><CCardBody><h2>Salin menjadi draft baru</h2><p>Buat paket baru berdasarkan pertanyaan paket ini. Setelah tersimpan, detail salinan akan terbuka; gunakan tombol Edit pertanyaan di atas untuk mengubahnya.</p>
-        <CForm onSubmit={copy}><fieldset disabled={copying}>
+        <CForm onSubmit={copy}><fieldset disabled={busy}>
           <label htmlFor="new-id">ID paket baru</label><CFormInput id="new-id" required maxLength={80} placeholder="mbti-v2" value={newId} onChange={(e) => setNewId(e.target.value)} />
           <label htmlFor="copy-title">Judul</label><CFormInput id="copy-title" required maxLength={160} value={title} onChange={(e) => setTitle(e.target.value)} />
           <label htmlFor="copy-version">Label versi baru</label><CFormInput id="copy-version" required maxLength={80} placeholder="v2" value={version} onChange={(e) => setVersion(e.target.value)} />

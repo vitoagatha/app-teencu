@@ -5,6 +5,64 @@ import { fingerprint, validateDraft } from '../domain/mbtiDraft.js';
 export function createMbtiBankRepository({ auth, firestore }, uid) {
   const assertSession = () => { if (auth.currentUser?.uid !== uid) throw new Error('Sesi berubah. Silakan masuk kembali.'); };
   return {
+    async publish(bank) {
+      assertSession();
+      validateBank(bank.id, bank);
+      const expected = fingerprint(bank);
+      await runTransaction(firestore, async (transaction) => {
+        assertSession();
+        const reference = doc(firestore, 'mbti_tests', bank.id);
+        const snapshot = await transaction.get(reference);
+        if (!snapshot.exists()) throw new Error('Draft tidak ditemukan. Muat ulang paket.');
+        const current = readBank(snapshot);
+        if (current.status !== 'draft') throw new Error('Paket sudah published. Muat ulang untuk memeriksa statusnya.');
+        if (fingerprint(current) !== expected) throw new Error('Draft berubah sejak ditinjau. Muat ulang dan periksa kembali sebelum publish.');
+        transaction.update(reference, { status: 'published', publishedAt: serverTimestamp() });
+      });
+      assertSession();
+    },
+    async prepareActivation(id) {
+      assertSession();
+      return runTransaction(firestore, async (transaction) => {
+        assertSession();
+        const snapshot = await transaction.get(doc(firestore, 'mbti_tests', id));
+        const active = await transaction.get(doc(firestore, 'mbti_config/active'));
+        if (!snapshot.exists()) throw new Error('Paket tujuan tidak ditemukan.');
+        const target = readBank(snapshot);
+        if (target.status !== 'published') throw new Error('Hanya paket published yang dapat diaktifkan.');
+        const pointer = active.exists() ? active.data() : null;
+        let current = null;
+        if (pointer && typeof pointer.testId === 'string' && /^[a-zA-Z0-9_-]{1,80}$/.test(pointer.testId)) {
+          const currentSnapshot = await transaction.get(doc(firestore, 'mbti_tests', pointer.testId));
+          if (currentSnapshot.exists()) current = readBank(currentSnapshot);
+        }
+        assertSession();
+        return { target, pointer, current };
+      });
+    },
+    async activate(context) {
+      assertSession();
+      // Freeze confirmation evidence before asynchronous retries (including ABA
+      // changes to active testId: updatedAt must still match).
+      const targetId = context.target.id;
+      const expectedTarget = fingerprint(context.target);
+      const expectedPointer = fingerprint(context.pointer);
+      await runTransaction(firestore, async (transaction) => {
+        assertSession();
+        const snapshot = await transaction.get(doc(firestore, 'mbti_tests', targetId));
+        const reference = doc(firestore, 'mbti_config/active');
+        const active = await transaction.get(reference);
+        if (!snapshot.exists()) throw new Error('Paket tujuan tidak ditemukan.');
+        const target = readBank(snapshot);
+        if (target.status !== 'published') throw new Error('Paket tujuan belum published.');
+        if (fingerprint(target) !== expectedTarget) throw new Error('Paket tujuan berubah. Tinjau ulang sebelum aktivasi.');
+        const currentPointer = active.exists() ? active.data() : null;
+        if (fingerprint(currentPointer) !== expectedPointer) throw new Error('Versi aktif berubah oleh admin lain. Tinjau ulang dan konfirmasi kembali.');
+        if (currentPointer?.testId === targetId) return;
+        transaction.set(reference, { testId: targetId, updatedAt: serverTimestamp() });
+      });
+      assertSession();
+    },
     async saveDraft(id, bank, baseline = null) {
       assertSession();
       // Copy inputs before the async transaction; retries must use the same edit.
