@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { CAlert, CButton, CCard, CCardBody, CForm, CFormInput, CFormSelect, CFormTextarea } from '@coreui/react';
 import { draftContent, fingerprint, moveQuestion, validateDraft } from '../domain/mbtiDraft.js';
+import { createPreview } from '../domain/mbtiScoring.js';
+import BankPreviewPage from './BankPreviewPage.jsx';
 
 const emptyDraft = () => ({ title: '', version: '', questions: ['E', 'S', 'T', 'J'].map((agreeWith) => ({ id: `q-${crypto.randomUUID()}`, text: '', agreeWith })) });
 export default function BankEditorPage({ id, repository, onBack, onCreated, registerGuard }) {
   const [baseline, setBaseline] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [form, setForm] = useState(emptyDraft);
   const [newId, setNewId] = useState('');
   const [loading, setLoading] = useState(Boolean(id));
@@ -65,9 +68,15 @@ export default function BankEditorPage({ id, repository, onBack, onCreated, regi
     } finally { pending.current = false; if (alive.current) setBusy(false); }
   }
   const reload = () => { if (!busy && (!dirty || window.confirm('Buang perubahan lokal dan muat ulang draft dari server?'))) setRevision((v) => v + 1); };
+  const openPreview = () => {
+    try { setPreview(createPreview(effectiveId, draftContent(form))); }
+    catch (cause) { setError(cause.message); }
+  };
+  if (preview) return <BankPreviewPage bank={preview} unsaved={dirty} onBack={() => setPreview(null)} />;
   return <>
     <CButton color="secondary" variant="outline" disabled={busy} onClick={onBack}>Kembali</CButton>
     <h1>{id ? 'Edit draft' : 'Buat draft baru'}</h1>
+    {!loading && !loadError && <div className="mb-3"><CButton color="secondary" variant="outline" disabled={busy || Boolean(validation)} onClick={openPreview}>Pratinjau tes</CButton>{validation && <p className="small text-body-secondary mt-2">Pratinjau belum tersedia: {validation}</p>}</div>}
     {loading ? <p role="status">Memuat draft…</p> : loadError ? <CAlert color="warning"><p>{loadError}</p><CButton color="secondary" onClick={reload}>Coba lagi</CButton></CAlert> : <CForm onSubmit={save}>
       <fieldset disabled={busy}>
         <CCard className="mb-4"><CCardBody>
