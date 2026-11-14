@@ -2,9 +2,12 @@ import { CButton, CFormInput, CForm } from '@coreui/react';
 import { useEffect, useRef, useState } from 'react';
 import { CCard, CCardBody } from '@coreui/react';
 import { BankStatus, formatDate } from '../components/BankMetadata.jsx';
+import { createPreview } from '../domain/mbtiScoring.js';
+import BankPreviewPage from './BankPreviewPage.jsx';
 
 export default function BankDetailPage({ id, repository, onBack, onSelect, onEdit }) {
   const [result, setResult] = useState({ loading: true });
+  const [preview, setPreview] = useState(null);
   const [revision, setRevision] = useState(0);
   const [copying, setCopying] = useState(false);
   const [error, setError] = useState('');
@@ -30,10 +33,12 @@ export default function BankDetailPage({ id, repository, onBack, onSelect, onEdi
     catch (cause) { if (mounted.current) setError(cause.code ? 'Draft belum dapat disimpan. Periksa koneksi dan izin admin. Jika ID sudah ada, buka paket tersebut untuk memeriksa hasilnya.' : cause.message); }
     finally { pending.current = false; if (mounted.current) setCopying(false); }
   }
+  if (preview) return <BankPreviewPage bank={preview} onBack={() => setPreview(null)} />;
   return <>
     <CButton color="secondary" variant="outline" disabled={copying} onClick={onBack}>Kembali ke daftar</CButton>
     {result.loading ? <p role="status">Memuat detail…</p> : result.error ? <div role="alert"><p>Paket tidak ditemukan, tidak valid, atau belum dapat dimuat.</p><CButton color="primary" onClick={() => setRevision((v) => v + 1)}>Coba lagi</CButton></div> : <>
       <h1>{result.bank.title}</h1><BankStatus bank={result.bank} />
+      <div className="actions"><CButton color="secondary" variant="outline" disabled={copying} onClick={() => { try { setPreview(createPreview(id, result.bank)); } catch (cause) { setError(cause.message); } }}>Pratinjau tes</CButton></div>
       {result.bank.status === 'draft' ? <div className="actions"><CButton color="primary" onClick={onEdit}>Edit pertanyaan</CButton></div> : <p className="mt-3 text-body-secondary">Versi published terkunci. Salin sebagai draft untuk mengubah pertanyaan.</p>}
       <dl className="bank-meta"><dt>ID paket</dt><dd>{id}</dd><dt>Versi</dt><dd>{result.bank.version}</dd><dt>Algoritma</dt><dd>{result.bank.scoringVersion}</dd><dt>Dibuat</dt><dd>{formatDate(result.bank.createdAt)}</dd><dt>Dipublikasikan</dt><dd>{formatDate(result.bank.publishedAt)}</dd></dl>
       <h2>{result.bank.questions.length} pertanyaan</h2>

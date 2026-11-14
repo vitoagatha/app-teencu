@@ -1,0 +1,1892 @@
+{
+  "scoringVersion": "teencu-centered-v1",
+  "banks": {
+    "seed-v1": [
+      {
+        "id": "q01",
+        "text": "Saya merasa lebih berenergi saat berada di acara sosial atau bersama banyak orang.",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q02",
+        "text": "Saya lebih suka menghabiskan waktu sendiri untuk menyegarkan pikiran.",
+        "agreeWith": "I"
+      },
+      {
+        "id": "q03",
+        "text": "Saya suka berbicara untuk memecahkan masalah daripada merenungkannya dalam pikiran.",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q04",
+        "text": "Saya cenderung berbicara lebih banyak daripada mendengarkan dalam percakapan.",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q05",
+        "text": "Saya merasa nyaman bekerja dalam kelompok besar.",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q06",
+        "text": "Saya lebih suka detail yang konkret dibandingkan ide-ide abstrak.",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q07",
+        "text": "Saya fokus pada masa kini daripada memikirkan masa depan yang jauh.",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q08",
+        "text": "Saya senang mengandalkan fakta daripada intuisi atau perasaan.",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q09",
+        "text": "Saya sering memperhatikan detail kecil yang sering dilewatkan orang lain.",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q10",
+        "text": "Saya lebih senang melihat \"gambaran besar\" daripada fokus pada detail kecil.",
+        "agreeWith": "N"
+      },
+      {
+        "id": "q11",
+        "text": "Saya membuat keputusan berdasarkan logika dan fakta, bukan emosi.",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q12",
+        "text": "Saya lebih peduli tentang keadilan daripada menjaga perasaan orang lain.",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q13",
+        "text": "Saya sering mempertimbangkan konsekuensi logis dalam setiap tindakan saya.",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q14",
+        "text": "Saya lebih memilih menyelesaikan masalah daripada memikirkan dampak emosionalnya.",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q15",
+        "text": "Saya cenderung mengambil keputusan dengan mempertimbangkan perasaan semua pihak.",
+        "agreeWith": "F"
+      },
+      {
+        "id": "q16",
+        "text": "Saya lebih suka merencanakan segalanya sebelumnya.",
+        "agreeWith": "J"
+      },
+      {
+        "id": "q17",
+        "text": "Saya merasa nyaman mengikuti jadwal dan struktur.",
+        "agreeWith": "J"
+      },
+      {
+        "id": "q18",
+        "text": "Saya lebih suka fleksibilitas daripada memiliki jadwal yang kaku.",
+        "agreeWith": "P"
+      },
+      {
+        "id": "q19",
+        "text": "Saya sering menunda pekerjaan hingga mendekati batas waktu.",
+        "agreeWith": "P"
+      },
+      {
+        "id": "q20",
+        "text": "Saya senang mengambil keputusan cepat dan menyelesaikan tugas dengan cepat.",
+        "agreeWith": "J"
+      }
+    ],
+    "polarity-E": [
+      {
+        "id": "q0",
+        "text": "Question 0",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q1",
+        "text": "Question 1",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q2",
+        "text": "Question 2",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q3",
+        "text": "Question 3",
+        "agreeWith": "J"
+      }
+    ],
+    "polarity-S": [
+      {
+        "id": "q0",
+        "text": "Question 0",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q1",
+        "text": "Question 1",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q2",
+        "text": "Question 2",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q3",
+        "text": "Question 3",
+        "agreeWith": "J"
+      }
+    ],
+    "polarity-T": [
+      {
+        "id": "q0",
+        "text": "Question 0",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q1",
+        "text": "Question 1",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q2",
+        "text": "Question 2",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q3",
+        "text": "Question 3",
+        "agreeWith": "J"
+      }
+    ],
+    "polarity-J": [
+      {
+        "id": "q0",
+        "text": "Question 0",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q1",
+        "text": "Question 1",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q2",
+        "text": "Question 2",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q3",
+        "text": "Question 3",
+        "agreeWith": "J"
+      }
+    ],
+    "polarity-I": [
+      {
+        "id": "q0",
+        "text": "Question 0",
+        "agreeWith": "I"
+      },
+      {
+        "id": "q1",
+        "text": "Question 1",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q2",
+        "text": "Question 2",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q3",
+        "text": "Question 3",
+        "agreeWith": "J"
+      }
+    ],
+    "polarity-N": [
+      {
+        "id": "q0",
+        "text": "Question 0",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q1",
+        "text": "Question 1",
+        "agreeWith": "N"
+      },
+      {
+        "id": "q2",
+        "text": "Question 2",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q3",
+        "text": "Question 3",
+        "agreeWith": "J"
+      }
+    ],
+    "polarity-F": [
+      {
+        "id": "q0",
+        "text": "Question 0",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q1",
+        "text": "Question 1",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q2",
+        "text": "Question 2",
+        "agreeWith": "F"
+      },
+      {
+        "id": "q3",
+        "text": "Question 3",
+        "agreeWith": "J"
+      }
+    ],
+    "polarity-P": [
+      {
+        "id": "q0",
+        "text": "Question 0",
+        "agreeWith": "E"
+      },
+      {
+        "id": "q1",
+        "text": "Question 1",
+        "agreeWith": "S"
+      },
+      {
+        "id": "q2",
+        "text": "Question 2",
+        "agreeWith": "T"
+      },
+      {
+        "id": "q3",
+        "text": "Question 3",
+        "agreeWith": "P"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "ESTJ",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 5,
+        "q02": 1,
+        "q03": 5,
+        "q04": 5,
+        "q05": 5,
+        "q06": 5,
+        "q07": 5,
+        "q08": 5,
+        "q09": 5,
+        "q10": 1,
+        "q11": 5,
+        "q12": 5,
+        "q13": 5,
+        "q14": 5,
+        "q15": 1,
+        "q16": 5,
+        "q17": 5,
+        "q18": 1,
+        "q19": 1,
+        "q20": 5
+      },
+      "expected": {
+        "type": "ESTJ",
+        "scores": {
+          "ei": 10,
+          "sn": 10,
+          "tf": 10,
+          "jp": 10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ESTP",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 5,
+        "q02": 1,
+        "q03": 5,
+        "q04": 5,
+        "q05": 5,
+        "q06": 5,
+        "q07": 5,
+        "q08": 5,
+        "q09": 5,
+        "q10": 1,
+        "q11": 5,
+        "q12": 5,
+        "q13": 5,
+        "q14": 5,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 5,
+        "q19": 5,
+        "q20": 1
+      },
+      "expected": {
+        "type": "ESTP",
+        "scores": {
+          "ei": 10,
+          "sn": 10,
+          "tf": 10,
+          "jp": -10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ESFJ",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 5,
+        "q02": 1,
+        "q03": 5,
+        "q04": 5,
+        "q05": 5,
+        "q06": 5,
+        "q07": 5,
+        "q08": 5,
+        "q09": 5,
+        "q10": 1,
+        "q11": 1,
+        "q12": 1,
+        "q13": 1,
+        "q14": 1,
+        "q15": 5,
+        "q16": 5,
+        "q17": 5,
+        "q18": 1,
+        "q19": 1,
+        "q20": 5
+      },
+      "expected": {
+        "type": "ESFJ",
+        "scores": {
+          "ei": 10,
+          "sn": 10,
+          "tf": -10,
+          "jp": 10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ESFP",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 5,
+        "q02": 1,
+        "q03": 5,
+        "q04": 5,
+        "q05": 5,
+        "q06": 5,
+        "q07": 5,
+        "q08": 5,
+        "q09": 5,
+        "q10": 1,
+        "q11": 1,
+        "q12": 1,
+        "q13": 1,
+        "q14": 1,
+        "q15": 5,
+        "q16": 1,
+        "q17": 1,
+        "q18": 5,
+        "q19": 5,
+        "q20": 1
+      },
+      "expected": {
+        "type": "ESFP",
+        "scores": {
+          "ei": 10,
+          "sn": 10,
+          "tf": -10,
+          "jp": -10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ENTJ",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 5,
+        "q02": 1,
+        "q03": 5,
+        "q04": 5,
+        "q05": 5,
+        "q06": 1,
+        "q07": 1,
+        "q08": 1,
+        "q09": 1,
+        "q10": 5,
+        "q11": 5,
+        "q12": 5,
+        "q13": 5,
+        "q14": 5,
+        "q15": 1,
+        "q16": 5,
+        "q17": 5,
+        "q18": 1,
+        "q19": 1,
+        "q20": 5
+      },
+      "expected": {
+        "type": "ENTJ",
+        "scores": {
+          "ei": 10,
+          "sn": -10,
+          "tf": 10,
+          "jp": 10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ENTP",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 5,
+        "q02": 1,
+        "q03": 5,
+        "q04": 5,
+        "q05": 5,
+        "q06": 1,
+        "q07": 1,
+        "q08": 1,
+        "q09": 1,
+        "q10": 5,
+        "q11": 5,
+        "q12": 5,
+        "q13": 5,
+        "q14": 5,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 5,
+        "q19": 5,
+        "q20": 1
+      },
+      "expected": {
+        "type": "ENTP",
+        "scores": {
+          "ei": 10,
+          "sn": -10,
+          "tf": 10,
+          "jp": -10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ENFJ",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 5,
+        "q02": 1,
+        "q03": 5,
+        "q04": 5,
+        "q05": 5,
+        "q06": 1,
+        "q07": 1,
+        "q08": 1,
+        "q09": 1,
+        "q10": 5,
+        "q11": 1,
+        "q12": 1,
+        "q13": 1,
+        "q14": 1,
+        "q15": 5,
+        "q16": 5,
+        "q17": 5,
+        "q18": 1,
+        "q19": 1,
+        "q20": 5
+      },
+      "expected": {
+        "type": "ENFJ",
+        "scores": {
+          "ei": 10,
+          "sn": -10,
+          "tf": -10,
+          "jp": 10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ENFP",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 5,
+        "q02": 1,
+        "q03": 5,
+        "q04": 5,
+        "q05": 5,
+        "q06": 1,
+        "q07": 1,
+        "q08": 1,
+        "q09": 1,
+        "q10": 5,
+        "q11": 1,
+        "q12": 1,
+        "q13": 1,
+        "q14": 1,
+        "q15": 5,
+        "q16": 1,
+        "q17": 1,
+        "q18": 5,
+        "q19": 5,
+        "q20": 1
+      },
+      "expected": {
+        "type": "ENFP",
+        "scores": {
+          "ei": 10,
+          "sn": -10,
+          "tf": -10,
+          "jp": -10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ISTJ",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 1,
+        "q02": 5,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 5,
+        "q07": 5,
+        "q08": 5,
+        "q09": 5,
+        "q10": 1,
+        "q11": 5,
+        "q12": 5,
+        "q13": 5,
+        "q14": 5,
+        "q15": 1,
+        "q16": 5,
+        "q17": 5,
+        "q18": 1,
+        "q19": 1,
+        "q20": 5
+      },
+      "expected": {
+        "type": "ISTJ",
+        "scores": {
+          "ei": -10,
+          "sn": 10,
+          "tf": 10,
+          "jp": 10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ISTP",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 1,
+        "q02": 5,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 5,
+        "q07": 5,
+        "q08": 5,
+        "q09": 5,
+        "q10": 1,
+        "q11": 5,
+        "q12": 5,
+        "q13": 5,
+        "q14": 5,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 5,
+        "q19": 5,
+        "q20": 1
+      },
+      "expected": {
+        "type": "ISTP",
+        "scores": {
+          "ei": -10,
+          "sn": 10,
+          "tf": 10,
+          "jp": -10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ISFJ",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 1,
+        "q02": 5,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 5,
+        "q07": 5,
+        "q08": 5,
+        "q09": 5,
+        "q10": 1,
+        "q11": 1,
+        "q12": 1,
+        "q13": 1,
+        "q14": 1,
+        "q15": 5,
+        "q16": 5,
+        "q17": 5,
+        "q18": 1,
+        "q19": 1,
+        "q20": 5
+      },
+      "expected": {
+        "type": "ISFJ",
+        "scores": {
+          "ei": -10,
+          "sn": 10,
+          "tf": -10,
+          "jp": 10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "ISFP",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 1,
+        "q02": 5,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 5,
+        "q07": 5,
+        "q08": 5,
+        "q09": 5,
+        "q10": 1,
+        "q11": 1,
+        "q12": 1,
+        "q13": 1,
+        "q14": 1,
+        "q15": 5,
+        "q16": 1,
+        "q17": 1,
+        "q18": 5,
+        "q19": 5,
+        "q20": 1
+      },
+      "expected": {
+        "type": "ISFP",
+        "scores": {
+          "ei": -10,
+          "sn": 10,
+          "tf": -10,
+          "jp": -10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "INTJ",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 1,
+        "q02": 5,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 1,
+        "q07": 1,
+        "q08": 1,
+        "q09": 1,
+        "q10": 5,
+        "q11": 5,
+        "q12": 5,
+        "q13": 5,
+        "q14": 5,
+        "q15": 1,
+        "q16": 5,
+        "q17": 5,
+        "q18": 1,
+        "q19": 1,
+        "q20": 5
+      },
+      "expected": {
+        "type": "INTJ",
+        "scores": {
+          "ei": -10,
+          "sn": -10,
+          "tf": 10,
+          "jp": 10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "INTP",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 1,
+        "q02": 5,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 1,
+        "q07": 1,
+        "q08": 1,
+        "q09": 1,
+        "q10": 5,
+        "q11": 5,
+        "q12": 5,
+        "q13": 5,
+        "q14": 5,
+        "q15": 1,
+        "q16": 1,
+        "q17": 1,
+        "q18": 5,
+        "q19": 5,
+        "q20": 1
+      },
+      "expected": {
+        "type": "INTP",
+        "scores": {
+          "ei": -10,
+          "sn": -10,
+          "tf": 10,
+          "jp": -10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "INFJ",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 1,
+        "q02": 5,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 1,
+        "q07": 1,
+        "q08": 1,
+        "q09": 1,
+        "q10": 5,
+        "q11": 1,
+        "q12": 1,
+        "q13": 1,
+        "q14": 1,
+        "q15": 5,
+        "q16": 5,
+        "q17": 5,
+        "q18": 1,
+        "q19": 1,
+        "q20": 5
+      },
+      "expected": {
+        "type": "INFJ",
+        "scores": {
+          "ei": -10,
+          "sn": -10,
+          "tf": -10,
+          "jp": 10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "INFP",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 1,
+        "q02": 5,
+        "q03": 1,
+        "q04": 1,
+        "q05": 1,
+        "q06": 1,
+        "q07": 1,
+        "q08": 1,
+        "q09": 1,
+        "q10": 5,
+        "q11": 1,
+        "q12": 1,
+        "q13": 1,
+        "q14": 1,
+        "q15": 5,
+        "q16": 1,
+        "q17": 1,
+        "q18": 5,
+        "q19": 5,
+        "q20": 1
+      },
+      "expected": {
+        "type": "INFP",
+        "scores": {
+          "ei": -10,
+          "sn": -10,
+          "tf": -10,
+          "jp": -10
+        },
+        "tiedDimensions": []
+      }
+    },
+    {
+      "name": "E-rating-1",
+      "bank": "polarity-E",
+      "answers": {
+        "q0": 1,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": -2,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "E-rating-2",
+      "bank": "polarity-E",
+      "answers": {
+        "q0": 2,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": -1,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "E-rating-3",
+      "bank": "polarity-E",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "E-rating-4",
+      "bank": "polarity-E",
+      "answers": {
+        "q0": 4,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 1,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "E-rating-5",
+      "bank": "polarity-E",
+      "answers": {
+        "q0": 5,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 2,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "S-rating-1",
+      "bank": "polarity-S",
+      "answers": {
+        "q0": 3,
+        "q1": 1,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": -2,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "S-rating-2",
+      "bank": "polarity-S",
+      "answers": {
+        "q0": 3,
+        "q1": 2,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": -1,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "S-rating-3",
+      "bank": "polarity-S",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "S-rating-4",
+      "bank": "polarity-S",
+      "answers": {
+        "q0": 3,
+        "q1": 4,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 1,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "S-rating-5",
+      "bank": "polarity-S",
+      "answers": {
+        "q0": 3,
+        "q1": 5,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 2,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "T-rating-1",
+      "bank": "polarity-T",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 1,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": -2,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "T-rating-2",
+      "bank": "polarity-T",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 2,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": -1,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "T-rating-3",
+      "bank": "polarity-T",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "T-rating-4",
+      "bank": "polarity-T",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 4,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 1,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "T-rating-5",
+      "bank": "polarity-T",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 5,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 2,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "J-rating-1",
+      "bank": "polarity-J",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 1
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": -2
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf"
+        ]
+      }
+    },
+    {
+      "name": "J-rating-2",
+      "bank": "polarity-J",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 2
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": -1
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf"
+        ]
+      }
+    },
+    {
+      "name": "J-rating-3",
+      "bank": "polarity-J",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "J-rating-4",
+      "bank": "polarity-J",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 4
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 1
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf"
+        ]
+      }
+    },
+    {
+      "name": "J-rating-5",
+      "bank": "polarity-J",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 5
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 2
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf"
+        ]
+      }
+    },
+    {
+      "name": "I-rating-1",
+      "bank": "polarity-I",
+      "answers": {
+        "q0": 1,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 2,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "I-rating-2",
+      "bank": "polarity-I",
+      "answers": {
+        "q0": 2,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 1,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "I-rating-3",
+      "bank": "polarity-I",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "I-rating-4",
+      "bank": "polarity-I",
+      "answers": {
+        "q0": 4,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": -1,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "I-rating-5",
+      "bank": "polarity-I",
+      "answers": {
+        "q0": 5,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": -2,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "N-rating-1",
+      "bank": "polarity-N",
+      "answers": {
+        "q0": 3,
+        "q1": 1,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 2,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "N-rating-2",
+      "bank": "polarity-N",
+      "answers": {
+        "q0": 3,
+        "q1": 2,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 1,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "N-rating-3",
+      "bank": "polarity-N",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "N-rating-4",
+      "bank": "polarity-N",
+      "answers": {
+        "q0": 3,
+        "q1": 4,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": -1,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "N-rating-5",
+      "bank": "polarity-N",
+      "answers": {
+        "q0": 3,
+        "q1": 5,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": -2,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "F-rating-1",
+      "bank": "polarity-F",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 1,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 2,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "F-rating-2",
+      "bank": "polarity-F",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 2,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 1,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "F-rating-3",
+      "bank": "polarity-F",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "F-rating-4",
+      "bank": "polarity-F",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 4,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": -1,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "F-rating-5",
+      "bank": "polarity-F",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 5,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": -2,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "P-rating-1",
+      "bank": "polarity-P",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 1
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 2
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf"
+        ]
+      }
+    },
+    {
+      "name": "P-rating-2",
+      "bank": "polarity-P",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 2
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 1
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf"
+        ]
+      }
+    },
+    {
+      "name": "P-rating-3",
+      "bank": "polarity-P",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "P-rating-4",
+      "bank": "polarity-P",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 4
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": -1
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf"
+        ]
+      }
+    },
+    {
+      "name": "P-rating-5",
+      "bank": "polarity-P",
+      "answers": {
+        "q0": 3,
+        "q1": 3,
+        "q2": 3,
+        "q3": 5
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": -2
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf"
+        ]
+      }
+    },
+    {
+      "name": "all-neutral",
+      "bank": "seed-v1",
+      "answers": {
+        "q01": 3,
+        "q02": 3,
+        "q03": 3,
+        "q04": 3,
+        "q05": 3,
+        "q06": 3,
+        "q07": 3,
+        "q08": 3,
+        "q09": 3,
+        "q10": 3,
+        "q11": 3,
+        "q12": 3,
+        "q13": 3,
+        "q14": 3,
+        "q15": 3,
+        "q16": 3,
+        "q17": 3,
+        "q18": 3,
+        "q19": 3,
+        "q20": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 0,
+          "sn": 0,
+          "tf": 0,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "ei",
+          "sn",
+          "tf",
+          "jp"
+        ]
+      }
+    },
+    {
+      "name": "one-balanced-dimension",
+      "bank": "polarity-E",
+      "answers": {
+        "q0": 5,
+        "q1": 5,
+        "q2": 5,
+        "q3": 3
+      },
+      "expected": {
+        "type": null,
+        "scores": {
+          "ei": 2,
+          "sn": 2,
+          "tf": 2,
+          "jp": 0
+        },
+        "tiedDimensions": [
+          "jp"
+        ]
+      }
+    }
+  ]
+}
