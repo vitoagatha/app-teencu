@@ -55,3 +55,45 @@ dt { color: #636777; } dd { margin: 0; }
 :focus-visible { outline: 3px solid #8359c7; outline-offset: 3px; }
 @media (min-width: 992px) { .admin-wrapper { margin-left: var(--cui-sidebar-width, 256px); } }
 @media (max-width: 767px) { .workspace { padding: 16px 4px; } .account-email { display: none; } .header-account { gap: 8px; } .header .fw-semibold { font-size: 13px; } }
+
+/* Audit UI/UX: shared spacing, readable controls and task-focused layouts. */
+:root { --teencu-accent: #a83f7b; --teencu-text-secondary: #505b69; --teencu-space: 8px; }
+.workspace .btn-outline-secondary { --cui-btn-color: #505b69; --cui-btn-border-color: #687483; }
+.workspace h1 { font-size: clamp(24px, 3vw, 30px); margin: 0; }
+.page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 16px 0; flex-wrap: wrap; }
+.active-summary { margin: 16px 0; box-shadow: none; }
+.active-summary .card-body > div { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.active-summary h2, .active-summary p { margin: 0; }
+.active-summary .btn { margin: 0; }
+.list-toolbar { display: flex; justify-content: flex-end; margin: 12px 0; }
+.bank-list { margin-top: 12px; box-shadow: none !important; }
+.table td, .table th { padding: 12px; }
+.table td { min-width: 0; }
+.package-link { color: #853060; border: 0; background: none; padding: 0; font: inherit; text-align: left; text-decoration: underline; text-underline-offset: 3px; }
+.question-editor { background: white; border: 1px solid var(--cui-border-color); border-radius: 6px; margin-bottom: 12px; scroll-margin-top: 260px; }
+.question-editor summary { padding: 16px; cursor: pointer; }
+.question-editor-body { padding: 0 16px 16px; }
+.draft-editor { margin-top: 16px; }
+.editor-save-bar { position: sticky; top: 70px; z-index: 5; background: white; border: 1px solid var(--cui-border-color); padding: 12px; margin-bottom: 16px; max-height: 45svh; overflow-y: auto; }
+.editor-save-bar p { margin-bottom: 8px; line-height: 1.4; }
+.draft-editor label { margin: 12px 0 8px; }
+.draft-editor textarea, .draft-editor input, .copy-panel input { scroll-margin-top: 300px; }
+.simulation-scores { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 24px 0; }
+.simulation-scores dd { font-size: 24px; }
+.skip-link { position: fixed; left: 8px; top: -100px; z-index: 2000; padding: 12px; background: white; }
+.skip-link:focus { top: 8px; }
+.account-menu { display: none; position: relative; }
+.account-menu > span { position: absolute; right: 0; top: 32px; background: white; border: 1px solid var(--cui-border-color); padding: 12px; max-width: 260px; overflow-wrap: anywhere; }
+@media (max-width: 767px) {
+  .header .fw-semibold { display: none; }
+  .account-menu { display: block; }
+  .table .publication-date { display: none; }
+  .table td:first-child { width: 60%; overflow-wrap: anywhere; }
+  .table th { white-space: normal; }
+  .table td, .table th { padding: 8px; }
+  .simulation-scores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-height: 600px) { .editor-save-bar { position: static; } }
+
+.question-tools { margin: 16px 0; }
+.question-tools .form-select { max-width: 320px; }

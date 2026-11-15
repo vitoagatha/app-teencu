@@ -6,21 +6,33 @@ import { createPreview } from '../domain/mbtiScoring.js';
 import BankPreviewPage from './BankPreviewPage.jsx';
 import PublicationActions from '../components/PublicationActions.jsx';
 
-export default function BankDetailPage({ id, repository, onBack, onSelect, onEdit, registerGuard }) {
+export default function BankDetailPage({ id, repository, onBack, onSelect, onEdit, registerGuard, onPreviewChange }) {
   const [result, setResult] = useState({ loading: true });
   const [preview, setPreview] = useState(null);
+  const previewTrigger = useRef(null);
+  useEffect(() => {
+    onPreviewChange(Boolean(preview));
+    if (!preview && previewTrigger.current) {
+      const target = document.querySelector('[data-preview-trigger]');
+      const frame = requestAnimationFrame(() => { if (target?.isConnected) target.focus(); });
+      return () => { cancelAnimationFrame(frame); onPreviewChange(false); };
+    }
+    return () => onPreviewChange(false);
+  }, [preview, onPreviewChange]);
   const [revision, setRevision] = useState(0);
   const [copying, setCopying] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [notice, setNotice] = useState('');
   const [active, setActive] = useState(null);
+  const [activeState, setActiveState] = useState('loading');
   const busy = copying || publishing;
   const operation = useRef(false);
   operation.current = busy;
   useEffect(() => { registerGuard(() => !operation.current); return () => registerGuard(null); }, [registerGuard]);
   useEffect(() => {
     let current = true;
-    repository.loadActive().then((value) => { if (current) setActive(value); }).catch(() => { if (current) setActive(null); });
+    setActiveState('loading');
+    repository.loadActive().then((value) => { if (current) { setActive(value); setActiveState('ready'); } }).catch(() => { if (current) { setActive(null); setActiveState('error'); } });
     return () => { current = false; };
   }, [repository, revision]);
   const [error, setError] = useState('');
@@ -55,10 +67,11 @@ export default function BankDetailPage({ id, repository, onBack, onSelect, onEdi
     {notice && <CAlert color="success" className="mt-3" role="status">{notice}</CAlert>}
     <CButton className="ms-2" color="secondary" variant="outline" disabled={busy} onClick={() => { setNotice(''); setRevision((v) => v + 1); }}>Muat ulang status</CButton>
     {result.loading ? <p role="status">Memuat detail…</p> : result.error ? <div role="alert"><p>Paket tidak ditemukan, tidak valid, atau belum dapat dimuat.</p><CButton color="primary" onClick={() => setRevision((v) => v + 1)}>Coba lagi</CButton></div> : <>
-      <h1>{result.bank.title}</h1><BankStatus bank={result.bank} active={active?.id === id} />
-      <PublicationActions bank={result.bank} repository={repository} disabled={copying} onBusyChange={setPublishing} onUpdated={(message) => { setNotice(message); setRevision((v) => v + 1); }} />
-      <div className="actions"><CButton color="secondary" variant="outline" disabled={busy} onClick={() => { try { setPreview(createPreview(id, result.bank)); } catch (cause) { setError(cause.message); } }}>Pratinjau tes</CButton></div>
-      {result.bank.status === 'draft' ? <div className="actions"><CButton color="primary" disabled={busy} onClick={onEdit}>Edit pertanyaan</CButton></div> : <p className="mt-3 text-body-secondary">Versi published terkunci. Salin sebagai draft untuk mengubah pertanyaan.</p>}
+      <h1>{result.bank.title}</h1><BankStatus bank={result.bank} active={activeState === 'ready' && active?.id === id} />{activeState === 'loading' && <p role="status">Memeriksa versi aktif…</p>}{activeState === 'error' && <p role="alert">Status aktif belum diketahui. Gunakan Muat ulang status untuk mencoba lagi.</p>}
+
+      <div className="actions"><CButton color="secondary" variant="outline" disabled={busy} data-preview-trigger onClick={() => { try { previewTrigger.current = true; setPreview(createPreview(id, result.bank)); } catch (cause) { setError(cause.message); } }}>Pratinjau tes</CButton></div>
+      {result.bank.status === 'draft' ? <div className="actions"><CButton color="primary" disabled={busy} onClick={onEdit}>Edit pertanyaan</CButton></div> : <p className="mt-3 text-body-secondary">Versi terbit terkunci. <button className="package-link" disabled={busy} onClick={() => document.getElementById('new-id')?.focus()}>Salin sebagai draft</button> untuk mengubah pertanyaan.</p>}
+      <PublicationActions bank={result.bank} repository={repository} activeState={activeState} isActive={active?.id === id} disabled={copying} onBusyChange={setPublishing} onUpdated={(message) => { setNotice(message); setRevision((v) => v + 1); }} />
       <dl className="bank-meta"><dt>ID paket</dt><dd>{id}</dd><dt>Versi</dt><dd>{result.bank.version}</dd><dt>Algoritma</dt><dd>{result.bank.scoringVersion}</dd><dt>Dibuat</dt><dd>{formatDate(result.bank.createdAt)}</dd><dt>Dipublikasikan</dt><dd>{formatDate(result.bank.publishedAt)}</dd></dl>
       <h2>{result.bank.questions.length} pertanyaan</h2>
       <ol className="question-list">{result.bank.questions.map((q) => <li key={q.id}><p>{q.text}</p><small>{q.id} · Setuju mengarah ke {q.agreeWith}</small></li>)}</ol>

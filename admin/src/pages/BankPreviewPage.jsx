@@ -24,11 +24,11 @@ export default function BankPreviewPage({ bank, unsaved = false, onBack }) {
     {result ? <CCard><CCardBody>
       <h2>{result.type ? `Hasil simulasi: ${result.type}` : 'Hasil masih seimbang'}</h2>
       {!result.type && <p>Dimensi {result.tiedDimensions.map((d) => dimensions[d]).join(', ')} masih seimbang. Belum ada tipe empat huruf yang ditentukan.</p>}
-      <dl className="bank-meta">{Object.entries(result.scores).map(([key, score]) => <div key={key}><dt>{dimensions[key]}</dt><dd>{score > 0 ? '+' : ''}{score}</dd></div>)}</dl>
+      <dl className="simulation-scores">{Object.entries(result.scores).map(([key, score]) => <div key={key}><dt>{dimensions[key]}</dt><dd>{score > 0 ? '+' : ''}{score}</dd></div>)}</dl>
       <p className="small text-body-secondary">Positif: E/S/T/J · Negatif: I/N/F/P · Nol: seimbang.<br />Algoritma: {bank.scoringVersion}. Simulasi ini bukan diagnosis atau validasi psikometrik.</p>
       <div className="actions"><CButton color="primary" onClick={() => { setResult(null); setIndex(0); }}>Tinjau jawaban</CButton><CButton color="secondary" variant="outline" onClick={() => { setAnswers({}); setResult(null); setIndex(0); }}>Ulangi simulasi</CButton></div>
     </CCardBody></CCard> : <CCard><CCardBody>
-      <p>Soal {index + 1} dari {bank.questions.length} · {Object.keys(answers).length} terjawab</p>
+      <p role="status" aria-live="polite">Soal {index + 1} dari {bank.questions.length} · {Object.keys(answers).length} terjawab</p>
       <CProgress value={Object.keys(answers).length / bank.questions.length * 100} aria-label="Kemajuan jawaban" className="mb-4" />
       <fieldset><legend className="fs-5">{question.text}</legend>
         {labels.map((label, i) => <CFormCheck className="mb-3" key={`${question.id}-${i}`} type="radio" name={`preview-${question.id}`} id={`preview-${question.id}-${i}`} label={`${i + 1} — ${label}`} checked={answers[question.id] === i + 1} onChange={() => setAnswers((previous) => ({ ...previous, [question.id]: i + 1 }))} />)}

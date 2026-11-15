@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CAlert, CButton, CCard, CCardBody, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react';
 
-export default function PublicationActions({ bank, repository, onUpdated, onBusyChange, disabled = false }) {
+export default function PublicationActions({ bank, repository, onUpdated, onBusyChange, disabled = false, activeState, isActive }) {
   const [confirmation, setConfirmation] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -39,23 +39,23 @@ export default function PublicationActions({ bank, repository, onUpdated, onBusy
   }
   return <CCard className="my-4"><CCardBody>
     <h2>Publikasi dan versi aktif</h2>
-    <p>{bank.status === 'draft' ? 'Publish mengunci paket tersimpan ini. Aktivasi dilakukan terpisah setelah publikasi.' : 'Aktifkan paket ini untuk tes baru. Versi published lama juga dapat dipilih kembali.'}</p>
+    <p>{bank.status === 'draft' ? 'Terbitkan mengunci paket tersimpan ini. Aktivasi dilakukan terpisah setelah publikasi.' : 'Aktifkan paket ini untuk tes baru. Versi terbit lama juga dapat dipilih kembali.'}</p>
     {error && <CAlert color="danger" role="alert">{error}</CAlert>}
     {message && <CAlert color="success" role="status">{message}</CAlert>}
     <div className="actions mt-0">{bank.status === 'draft'
-      ? <CButton color="primary" disabled={busy || disabled} onClick={() => { setError(''); setMessage(''); setConfirmation({ action: 'publish' }); }}>Publish paket</CButton>
-      : <CButton color="primary" disabled={busy || disabled} onClick={prepare}>{busy ? 'Memeriksa…' : 'Aktifkan versi ini'}</CButton>}</div>
+      ? <CButton color="primary" disabled={busy || disabled} onClick={() => { setError(''); setMessage(''); setConfirmation({ action: 'publish' }); }}>Terbitkan paket</CButton>
+      : activeState !== 'ready' ? <p>Status aktif belum dikonfirmasi.</p> : isActive ? <p role="status">Dipakai untuk tes baru.</p> : <CButton color="primary" disabled={busy || disabled} onClick={prepare}>{busy ? 'Memeriksa…' : 'Aktifkan versi ini'}</CButton>}</div>
     <CModal visible={Boolean(confirmation)} backdrop="static" keyboard={!busy} onClose={() => { if (!pending.current) setConfirmation(null); }} aria-labelledby="publication-title">
       <CModalHeader closeButton={!busy}><CModalTitle id="publication-title">{confirmation?.action === 'publish' ? 'Konfirmasi publikasi' : 'Konfirmasi versi aktif'}</CModalTitle></CModalHeader>
       <CModalBody>{confirmation?.action === 'publish' ? <>
         <p><strong>{bank.title}</strong><br />ID: {bank.id} · Versi {bank.version} · {bank.questions.length} soal</p>
-        <CAlert color="warning">Setelah published, paket tidak dapat diedit atau dihapus melalui dashboard. Versi aktif tidak otomatis berubah.</CAlert>
+        <CAlert color="warning">Setelah terbit, paket tidak dapat diedit atau dihapus melalui dashboard. Versi aktif tidak otomatis berubah.</CAlert>
       </> : confirmation ? <>
         <p>Versi aktif saat ini: <strong>{confirmation.context.current ? `${confirmation.context.current.title} (${confirmation.context.current.version})` : confirmation.context.pointer ? 'Paket aktif tidak dapat dijelaskan' : 'Belum ada'}</strong><br />ID: {confirmation.context.pointer?.testId || '—'}</p>
         <p>Tujuan: <strong>{confirmation.context.target.title} ({confirmation.context.target.version})</strong><br />ID: {confirmation.context.target.id} · {confirmation.context.target.questions.length} soal</p>
-        <p>{confirmation.context.pointer?.testId === bank.id ? 'Paket ini sudah aktif. Konfirmasi tidak akan mengganti pointer yang sama.' : 'Tes yang baru dimulai akan memakai paket tujuan. Sesi berjalan dan riwayat lama tetap memakai versi asalnya.'}</p>
+        <p>{confirmation.context.pointer?.testId === bank.id ? 'Paket ini sudah aktif. Konfirmasi tidak akan mengubah versi aktif.' : 'Tes yang baru dimulai akan memakai paket tujuan. Sesi berjalan dan riwayat lama tetap memakai versi asalnya.'}</p>
       </> : null}</CModalBody>
-      <CModalFooter><CButton color="secondary" variant="outline" disabled={busy} onClick={() => setConfirmation(null)}>Batal</CButton><CButton color="primary" disabled={busy} onClick={confirm}>{busy ? 'Memproses…' : confirmation?.action === 'publish' ? 'Ya, publish paket' : 'Ya, aktifkan versi'}</CButton></CModalFooter>
+      <CModalFooter><CButton color="secondary" variant="outline" disabled={busy} onClick={() => setConfirmation(null)}>Batal</CButton><CButton color="primary" disabled={busy} onClick={confirm}>{busy ? 'Memproses…' : confirmation?.action === 'publish' ? 'Ya, terbitkan paket' : 'Ya, aktifkan versi'}</CButton></CModalFooter>
     </CModal>
   </CCardBody></CCard>;
 }
