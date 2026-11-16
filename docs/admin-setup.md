@@ -1,12 +1,14 @@
-# Setup lokal dashboard admin
+# Dashboard admin Teencu
 
-Dashboard memakai React + JavaScript + Vite di `admin/`. Tahap ketiga menambahkan
-login email/password, pemeriksaan izin admin dari server, pemantauan pencabutan
-izin, logout, serta halaman akses ditolak. Editor soal belum tersedia.
+Dashboard React + JavaScript + Vite menggunakan CoreUI Free React untuk mengelola
+paket pertanyaan MBTI. Fitur yang tersedia: login admin, daftar/detail paket,
+salinan draft, editor, pratinjau scoring, publikasi dan aktivasi versi.
+Lisensi komponen tersedia di [THIRD_PARTY_NOTICES](../admin/THIRD_PARTY_NOTICES.md).
 
 ## Menjalankan dashboard
 
-Dari root repositori, PowerShell atau Git Bash:
+Gunakan Node sesuai batas versi di [package.json](../admin/package.json).
+Dari root repositori:
 
 ```sh
 cd admin
@@ -14,18 +16,15 @@ npm ci
 npm run dev
 ```
 
-Buka http://127.0.0.1:5173. Node 22.16 yang tersedia saat setup dapat digunakan
-dengan dependency yang dikunci dalam `admin/package-lock.json`. Vite major 6 dan
-plugin React major 4 dipilih untuk kompatibilitas runtime ini. Package root untuk
-tes Firebase yang sudah ada tetap terpisah.
+Buka http://127.0.0.1:5173. Jika port sudah digunakan, hentikan dev server sebelumnya
+pada terminalnya. Restart server setelah mengganti konfigurasi environment.
 
-## Mode emulator (default)
+## Emulator lokal
 
-Tanpa `.env.local`, konfigurasi memakai project `demo-teencu`, Auth port 9099 dan
-Firestore port 8080, keduanya di `127.0.0.1`. Cloud tidak digunakan sebagai fallback
-jika emulator mati. Login dan pemeriksaan izin membutuhkan emulator berjalan.
+Tanpa `.env.local`, dashboard memakai project `demo-teencu`, Auth 9099 dan
+Firestore 8080 di localhost. Emulator yang gagal terhubung tidak dialihkan ke cloud.
 
-Jalankan emulator dari root repo di terminal terpisah, dengan Java 21:
+Dari root repo, jalankan pada terminal terpisah dengan Java 21:
 
 ```powershell
 $env:JAVA_HOME = 'C:/Program Files/Android/Android Studio/jbr'
@@ -33,52 +32,70 @@ $env:PATH = "$env:JAVA_HOME/bin;$env:PATH"
 firebase emulators:start --only auth,firestore --project demo-teencu
 ```
 
-## Mode cloud (setelah konfigurasi Web App tersedia)
-
-1. Di Firebase Console project `teencu-dev`, periksa daftar aplikasi. Gunakan
-   konfigurasi Web App yang sesuai, atau daftarkan Web App baru bila belum ada.
-   Tidak perlu mengaktifkan Hosting saat registrasi ini.
-2. Salin contoh konfigurasi:
-
-   ```powershell
-   Copy-Item admin/.env.example admin/.env.local
-   ```
-
-3. Pada `.env.local`, ganti target menjadi `cloud` dan isi `apiKey`, `authDomain`,
-   `projectId`, serta `appId` dari konfigurasi Web App resmi. `appId` harus memiliki
-   bagian `:web:`, bukan App ID Android. Project harus `teencu-dev`.
-4. Restart dev server. Untuk mode emulator lagi, ubah target ke `emulator` dan
-   restart. Environment Vite dibaca saat startup/build.
-
-Konfigurasi yang belum lengkap atau target salah menghasilkan pesan kesalahan;
-aplikasi tidak otomatis berpindah lingkungan. Init Firebase dilakukan melalui
-`getFirebaseServices()` di `admin/src/lib/firebase.js`, yang akan digunakan fitur
-login. Hindari pemanggilan SDK langsung dari komponen.
-
-Nilai `VITE_*` masuk ke bundle browser. Config client Firebase bukan kredensial
-admin. Password, token, dan service-account key tidak boleh dimasukkan ke sana.
-Pembatasan admin tetap melalui Auth dan Firestore Rules.
-File `.env.local`, dependency, serta build admin sudah diabaikan Git.
-
-## Pemeriksaan
+Dari folder `admin/`, siapkan data contoh:
 
 ```sh
-npm test
-npm run build
-npm run preview
+npm run seed:emulator
 ```
 
-Perintah pemeriksaan dijalankan dari folder `admin/`.
-Preview di http://127.0.0.1:4173 menampilkan hasil build terakhir. Build masuk ke
-`admin/dist/`. Pengujian konfigurasi memeriksa default emulator, target salah,
-config cloud tidak lengkap, project salah, dan penolakan App ID Android.
-Pengujian ini tidak memverifikasi layanan cloud atau akses admin.
+Script ini hanya mengakses emulator. Kredensial contoh dicetak oleh script dan
+bukan akun cloud. Seed tidak menimpa paket/pointer yang sudah ada, tetapi
+mengaktifkan kembali role akun admin contoh.
 
-Struktur awal memisahkan `pages`, `components`, `auth`, `services`, `domain`, dan
-`lib`. Folder yang belum berisi implementasi disimpan dengan `.gitkeep`.
-Belum ada konfigurasi deployment hosting, perubahan rules, atau penulisan cloud
-yang dilakukan pada tahap setup ini.
+## Firebase cloud
 
-Referensi: [Vite](https://vite.dev/guide/),
-[Auth emulator](https://firebase.google.com/docs/emulator-suite/connect_auth),
-[Firestore emulator](https://firebase.google.com/docs/emulator-suite/connect_firestore).
+1. Di Firebase Console project `teencu-dev`, ambil konfigurasi Web App
+   `teencu-admin` yang sudah terdaftar. Gunakan App ID Web, bukan Android.
+   Dashboard localhost tidak membutuhkan Firebase Hosting.
+2. Dari root repo, salin `admin/.env.example` ke `admin/.env.local`. Isi config
+   resmi Web App dengan struktur berikut:
+
+   ```dotenv
+   VITE_FIREBASE_TARGET=cloud
+   VITE_FIREBASE_API_KEY=CONFIG_WEB_APP
+   VITE_FIREBASE_AUTH_DOMAIN=teencu-dev.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=teencu-dev
+   VITE_FIREBASE_APP_ID=APP_ID_WEB
+   ```
+
+3. Masuk dengan akun Email/Password yang terdaftar di Authentication
+   `teencu-dev`. Akun Firebase Console dan akun contoh emulator berbeda.
+4. Pemilik project menetapkan dokumen Firestore `content_admins/{UID}` dengan
+   `enabled: true` bertipe boolean. UID diambil dari Authentication → Users.
+   Dashboard tidak dapat menetapkan izin sendiri.
+5. Dari root repo, deploy rules yang sesuai aplikasi:
+
+   ```sh
+   firebase deploy --only firestore:rules --project teencu-dev
+   ```
+
+6. Restart dashboard dan pastikan login menunjukkan **Cloud · teencu-dev**.
+   Pastikan tidak ada variabel terminal `VITE_FIREBASE_TARGET=emulator` yang
+   menimpa file lokal. Untuk kembali ke emulator, ganti target dan restart.
+
+File `.env.local` diabaikan Git. Nilai `VITE_*` masuk bundle browser; simpan hanya
+config client, bukan password, token atau service-account key. Hak akses tetap
+diperiksa oleh Firebase Auth dan Firestore Rules.
+
+Jika akses ditolak, periksa UID dan role. Jika login berhasil tetapi daftar gagal,
+periksa koneksi serta rules cloud terbaru. Dokumen paket tanpa `createdAt`
+tidak masuk query daftar. Hilangnya izin admin mengunci workspace kembali.
+
+## Alur pengelolaan
+
+Buat draft atau salin paket → Edit pertanyaan → Simpan → Pratinjau → Terbitkan.
+Salinan yang tersimpan membuka detailnya; gunakan tombol Edit pertanyaan di sana.
+Paket terbit terkunci. Aktivasi merupakan tindakan terpisah untuk tes baru.
+
+Model data, scoring, riwayat dan aturan versi dijelaskan di
+[bank soal dan riwayat](mbti-bank-and-history.md).
+
+## Pemeriksaan sebelum perubahan dirilis
+
+Dari `admin/`: `npm test` dan `npm run build`. Dari root: `flutter test --no-pub`.
+Unit test tidak membuktikan akses cloud. Periksa juga login/izin, simpan dan muat
+ulang draft, publikasi tanpa aktivasi, serta pergantian versi pada Android:
+sesi lama mempertahankan versinya, tes baru mengambil versi aktif, dan riwayat
+lama tetap terbaca.
+
+Build saat ini masih memberi peringatan ukuran bundle JavaScript di atas 500 kB.
