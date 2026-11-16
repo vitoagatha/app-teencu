@@ -48,3 +48,6 @@ node_modules/*
 /admin/dist/
 /admin/.env*
 !/admin/.env.example
+
+# Local audit reports and development test notes
+/.local/docs-archive/

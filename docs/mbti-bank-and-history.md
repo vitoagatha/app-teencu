@@ -26,7 +26,7 @@ users/{uid}
 Satu dokumen menyimpan satu paket soal (4-80 soal, seluruh dimensi harus ada).
 Pembatasan ukuran ini membuat paket kecil dan cukup dibaca satu kali. Urutan array
 adalah urutan tampilan. Arah memakai E/I/S/N/T/F/J/P. Semua soal mempunyai bobot
-sama dan memakai algoritma `teencu-centered-v1` yang sudah diaudit.
+sama dan memakai algoritma `teencu-centered-v1`.
 
 Dokumen draft boleh disunting oleh content admin. Setelah published, dokumen tidak
 boleh diubah maupun dihapus melalui client, termasuk oleh content admin. Perubahan
@@ -37,10 +37,14 @@ sesi yang sudah dimulai.
 Izin content admin sengaja dipisahkan dari profil yang dapat dibuat oleh pengguna.
 Aplikasi dan skrip tidak bisa membuat/mengubah dokumen content_admins. Pemilik
 project menetapkan atau mencabutnya langsung di Console. Admin konten tidak dapat
-membaca riwayat pribadi pengguna lain. Ini mekanisme admin konten awal; dashboard
-admin React, role moderator, statistik, dan audit admin belum termasuk tahap ini.
+membaca riwayat pribadi pengguna lain. Ini mekanisme admin konten; dashboard
+admin React tersedia untuk pengelolaan paket. Role moderator, statistik, dan
+audit aktivitas admin belum termasuk implementasi saat ini.
 
-## Setup cloud pertama (PowerShell, root project)
+## Mengisi bank awal melalui skrip
+
+Untuk pengelolaan harian, gunakan dashboard sesuai [panduan admin](admin-setup.md).
+Skrip berikut tersedia untuk menyiapkan paket awal atau mengelola seed dari terminal.
 
 1. Deploy rules terbaru:
 
@@ -138,25 +142,22 @@ mengubah atau menghapus versi published secara manual karena riwayat merujuknya.
 Rules baru menolak penyimpanan hasil hanya ke profil dari APK lama. Gunakan build
 terbaru bersama rules baru, dan isi bank soal sebelum menguji fitur tes.
 
-## Pengujian
+## Scoring MBTI
 
-```powershell
-flutter test --no-pub
-firebase emulators:exec --only auth,firestore --project demo-teencu "node --test test/firestore/*.test.mjs"
-```
+Setiap pertanyaan menentukan `agreeWith`, sisi yang didukung ketika pengguna
+setuju. Kontribusi skor adalah `(rating - 3) * direction`: direction +1 untuk
+E/S/T/J dan -1 untuk I/N/F/P. Rating 1–5 menghasilkan kontribusi -2, -1, 0, +1, +2
+ke sisi setuju. Jumlahkan per dimensi EI, SN, TF dan JP; nilai positif memilih
+E/S/T/J, negatif memilih I/N/F/P.
 
-Emulator perlu Java 21. Script rules memverifikasi publikasi immutable, akses
-admin, draft privat, pointer aktif, versi historis, privasi dan pagination history,
-commit atomik, larangan poin/role, dan skrip PowerShell publisher terhadap emulator.
+Jika ada dimensi bernilai nol, tipe empat huruf belum ditentukan. Aplikasi
+menampilkan dimensi seimbang dan tidak menimpa hasil profil. Scorer memvalidasi
+kelengkapan jawaban, ID pertanyaan, rating dan keterwakilan empat dimensi.
+Perhitungan mobile dan pratinjau admin menggunakan fixture bersama pada
+`test/fixtures/mbti-scoring-cases.json`.
 
-Uji manual cloud
-
-1. Publish/aktifkan v1. Selesaikan fixture ESTJ dan lihat profil serta riwayat.
-2. Buka detail riwayat: 20 jawaban, versi v1, skor dimensi sesuai fixture.
-3. Mulai sesi v1; setelah itu aktifkan v2 dari terminal. Selesaikan sesi lama: hasil
-   tetap mencatat v1. Tes berikutnya memakai v2; detail lama masih menampilkan v1.
-4. Uji Netral semua: tidak ada hasil baru di riwayat, profil tidak berubah.
-5. Coba publish ulang TestId yang sudah published: harus ditolak.
-6. Login akun kedua: riwayat akun pertama tidak tampil/tidak dapat dibaca.
-7. Uji koneksi terputus ketika memulai tes dan membaca riwayat: ada pesan coba lagi.
-   Transaksi submit memerlukan koneksi; jika mengembalikan error, jawaban tetap ada.
+Scoring Dart berada di `lib/services/mbti_scoring.dart`, dan scoring dashboard di
+`admin/src/domain/mbtiScoring.js`. Skor bukan persentase kepastian atau diagnosis.
+Materi soal masih memerlukan peninjauan konten/psikometri: q08 menggabungkan
+intuisi/perasaan, q12 mengaitkan keadilan, dan q19/q20 mengaitkan penundaan/kecepatan
+dengan preferensi. Pada seed awal, soal searah EI/SN/TF berbanding 4:1 dan JP 3:2.
